@@ -9,14 +9,8 @@ const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.en
 require('dotenv').config({ path: envFile });
 
 const app = express();
-
-// Use environment variables
 const PORT = process.env.PORT || 443;
 const isProduction = process.env.NODE_ENV === 'production';
-
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('Loading .env file:', envFile);
-console.log('PORT:', process.env.PORT);
 
 if (isProduction) {
     // Load SSL certificates for production
@@ -38,11 +32,15 @@ if (isProduction) {
     });
 }
 
-// Your other server code...
-
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'under_construction.html'));
+
+// Serve the Yu-Gi-Oh! Editor page at /ygo-editor
+app.get('/ygo-editor', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'ygo-editor.html'));
 });
 
-
+// Default route to serve the under construction page
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'html', 'under-construction.html'));
+});

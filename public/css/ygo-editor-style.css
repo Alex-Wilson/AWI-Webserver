@@ -1,0 +1,67 @@
+body {
+    background-color: #272822; /* Monokai background */
+    color: #f8f8f2; /* Monokai foreground */
+    font-family: "Courier New", Courier, monospace;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background-color: #3e3d32; /* Monokai selection background */
+    border-radius: 8px;
+}
+
+.navbar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.navbar a {
+    color: #a6e22e; /* Monokai green */
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #a6e22e;
+}
+
+.navbar a:hover {
+    background-color: #a6e22e;
+    color: #272822;
+}
+
+h1 {
+    text-align: center;
+    color: #f92672; /* Monokai pink */
+}
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background-color: #272822;
+    border: 1px solid #a6e22e;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.card p {
+    color: #a6e22e; /* Monokai green */
+    margin-top: 10px;
+}
