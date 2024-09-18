@@ -1,0 +1,118 @@
+/* under-construction-style.css */
+body {
+    background-color: #272822; /* Monokai background */
+    color: #f8f8f2; /* Monokai foreground */
+    font-family: "Courier New", Courier, monospace;
+    text-align: left;
+    padding: 20px;
+    margin: 0;
+    overflow: hidden;
+    line-height: 2; /* Increased line height */
+}
+
+.container {
+    max-width: 100%;
+    margin: auto;
+    padding: 20px;
+    border: 2px solid #66d9ef; /* Monokai cyan */
+    border-radius: 5px;
+    background-color: #3e3d32; /* Monokai selection background */
+    box-shadow: 0 0 10px #66d9ef;
+    box-sizing: border-box;
+}
+
+.navbar {
+    text-align: left;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.navbar a {
+    color: #a6e22e; /* Monokai green */
+    text-decoration: none;
+    margin-right: 15px;
+    font-size: 24px; /* Increased font size */
+    background-color: #3e3d32; /* Monokai selection background */
+    padding: 10px 15px; /* Increased padding */
+    border-radius: 3px;
+    border: 1px solid #a6e22e;
+    transition: background-color 0.3s;
+    margin-bottom: 10px; /* For better spacing on small screens */
+}
+
+.navbar a:hover {
+    background-color: #a6e22e;
+    color: #272822;
+}
+
+h1 {
+    font-size: 36px; /* Increased font size */
+    margin-bottom: 20px;
+    color: #f92672; /* Monokai pink */
+    text-align: center; /* Center the heading on smaller screens */
+}
+
+p {
+    font-size: 24px; /* Increased font size */
+    color: #a6e22e; /* Monokai green */
+    font-weight: bold; /* Made the text bolder */
+}
+
+.command-line {
+    display: flex;
+    align-items: center;
+    font-size: 24px; /* Increased font size */
+    color: #a6e22e; /* Monokai green */
+}
+
+.typing {
+    font-size: 24px; /* Increased font size */
+    color: #a6e22e; /* Monokai green */
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 4s steps(60, end) forwards;
+}
+
+.loading-bar {
+    margin-top: 20px;
+    font-size: 24px; /* Increased font size */
+    color: #a6e22e; /* Monokai green */
+    display: none;
+}
+
+.error {
+    font-size: 24px; /* Increased font size */
+    color: #a6e22e; /* Monokai green */
+    display: none;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.status-flag {
+    font-size: 20px; /* Adjusted font size for status flag */
+    color: #a6e22e; /* Monokai green */
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; } /* Adjust the width to match the length of the command */
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 48px;
+    }
+    p {
+        font-size: 28px;
+    }
+    .command-line, .loading-bar, .error {
+        font-size: 28px;
+    }
+}

@@ -1,52 +1,48 @@
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
 const https = require('https');
 const http = require('http');
-const fs = require('fs');
-const express = require('express');
-const path = require('path');
+
+// Load the correct .env file based on NODE_ENV
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envFile });
+
 const app = express();
 
-// SSL options
-const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/alexwilson.info/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/alexwilson.info/fullchain.pem')
-};
+// Use environment variables
+const PORT = process.env.PORT || 443;
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Redirect all HTTP requests to HTTPS
-http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80, () => {
-    console.log("HTTP Server listening on port 80 and redirecting to HTTPS");
-});
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('Loading .env file:', envFile);
+console.log('PORT:', process.env.PORT);
 
-// Middleware to redirect www to non-www and enforce HTTPS
-app.use((req, res, next) => {
-    // Check if the request is not using HTTPS
-    if (req.header('x-forwarded-proto') !== 'https' && !req.secure) {
-        return res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
-    }
+if (isProduction) {
+    // Load SSL certificates for production
+    const options = {
+        key: fs.readFileSync(process.env.SSL_KEY_PATH),
+        cert: fs.readFileSync(process.env.SSL_CERT_PATH)
+    };
 
-    // Check if the request is using 'www.' and redirect to the non-www version
-    if (req.headers.host && req.headers.host.startsWith('www.')) {
-        const newHost = req.headers.host.slice(4); // Remove 'www.'
-        return res.redirect(301, `https://${newHost}${req.originalUrl}`);
-    }
+    // Start the HTTPS server
+    https.createServer(options, app).listen(PORT, () => {
+        console.log(`HTTPS Server is listening on port ${PORT}`);
+        console.log(`Find this page at: https://alexwilson.info`);
+    });
+} else {
+    // Start the HTTP server for development
+    app.listen(PORT, () => {
+        console.log(`HTTP Server is listening on port ${PORT}`);
+        console.log(`Find this page at: http://localhost:${PORT}`);
+    });
+}
 
-    // Proceed to the next middleware if already on HTTPS and non-www
-    next();
-});
+// Your other server code...
 
-app.use(express.static(path.join(__dirname,'public')));
-
-// Serve the "Under Construction" HTML file
+app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'under_construction.html'));
+    res.sendFile(path.join(__dirname, 'public', 'html', 'under_construction.html'));
 });
 
-// Set the port to 443 for HTTPS
-const PORT = 443;
 
-// Start the HTTPS server
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`HTTPS Server is listening on port ${PORT}`);
-});
