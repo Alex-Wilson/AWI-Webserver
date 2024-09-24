@@ -1,19 +1,26 @@
+/* Apply a background image to the entire page */
 body {
-    background-color: #272822; /* Monokai background */
+    background-image: url('../images/bg-image.jpg'); /* Replace with the correct image file */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background fixed during scrolling */
+    background-repeat: no-repeat;
     color: #f8f8f2; /* Monokai foreground */
     font-family: "Courier New", Courier, monospace;
     padding: 20px;
     margin: 0;
 }
 
+/* Container for the main content */
 .container {
     max-width: 1000px;
     margin: auto;
     padding: 20px;
-    background-color: #3e3d32; /* Monokai selection background */
+    background-color: rgba(62, 61, 50, 0.9); /* Semi-transparent background to blend with the image */
     border-radius: 8px;
 }
 
+/* Navbar styling */
 .navbar {
     text-align: center;
     margin-bottom: 20px;
@@ -39,6 +46,7 @@ h1 {
     color: #f92672; /* Monokai pink */
 }
 
+/* Styling for the card grid */
 .grid-container {
     display: flex;
     flex-wrap: wrap;
@@ -64,4 +72,21 @@ h1 {
 .card p {
     color: #a6e22e; /* Monokai green */
     margin-top: 10px;
+}
+
+/* Additional styling for improved visuals */
+input[type="text"],
+select {
+    background-color: #3e3d32;
+    color: #f8f8f2;
+    border: 1px solid #a6e22e;
+    padding: 5px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: #f92672; /* Monokai pink */
 }
