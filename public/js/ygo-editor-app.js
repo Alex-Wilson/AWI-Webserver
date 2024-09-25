@@ -1,5 +1,3 @@
-// ygo-editor-app.js
-
 document.addEventListener('DOMContentLoaded', function () {
     const cardGrid = document.getElementById('card-grid');
     const searchBar = document.getElementById('search-bar');
@@ -7,17 +5,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const subtypeFilter = document.getElementById('subtype-filter');
     const rarityFilter = document.getElementById('rarity-filter');
     const levelFilter = document.getElementById('level-filter');
+    
+    let currentPage = 1;
+    const limit = 50; // Number of cards to load per page
     let allCards = []; // Store all card data here
+    let isLoading = false; // To avoid multiple requests at once
 
-    // Fetch cards from the Yu-Gi-Oh! API
-    async function fetchCards() {
+    // Fetch cards from the Yu-Gi-Oh! API with pagination
+    async function fetchCards(page = 1) {
+        if (isLoading) return;
+        isLoading = true;
+
         try {
-            const response = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php');
+            const response = await fetch(`/api/cards?page=${page}&limit=${limit}`);
             const data = await response.json();
-            allCards = data.data; // Store the fetched cards
-            displayCards(allCards); // Display all cards initially
+            allCards = [...allCards, ...data.data]; // Append new cards to allCards array
+            displayCards(allCards); // Display all loaded cards
         } catch (error) {
             console.error('Error fetching cards:', error);
+        } finally {
+            isLoading = false;
         }
     }
 
@@ -80,6 +87,14 @@ document.addEventListener('DOMContentLoaded', function () {
         displayCards(filteredCards);
     }
 
+    // Lazy load cards when scrolling
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+            currentPage++;
+            fetchCards(currentPage); // Load more cards when reaching the bottom of the page
+        }
+    });
+
     // Update subtype and level options based on card type selection
     cardTypeFilter.addEventListener('change', function () {
         const selectedType = cardTypeFilter.value;
@@ -135,5 +150,5 @@ document.addEventListener('DOMContentLoaded', function () {
     levelFilter.addEventListener('change', filterCards);
 
     // Initialize the card viewer
-    fetchCards();
+    fetchCards(currentPage);
 });

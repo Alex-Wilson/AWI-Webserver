@@ -1,5 +1,5 @@
 /* Apply a background image to the entire page */
-body {
+body, html {
     background-image: url('../images/bg-image.jpg'); /* Replace with the correct image file */
     background-size: cover;
     background-position: center;
@@ -9,6 +9,8 @@ body {
     font-family: "Courier New", Courier, monospace;
     padding: 20px;
     margin: 0;
+    height: 100%;
+    overflow-x: hidden;
 }
 
 /* Container for the main content */
@@ -18,6 +20,8 @@ body {
     padding: 20px;
     background-color: rgba(62, 61, 50, 0.9); /* Semi-transparent background to blend with the image */
     border-radius: 8px;
+    min-height: 100vh; /* Ensure the container grows to fill the height */
+    box-sizing: border-box;
 }
 
 /* Navbar styling */
@@ -72,6 +76,36 @@ h1 {
 .card p {
     color: #a6e22e; /* Monokai green */
     margin-top: 10px;
+}
+
+/* Ensure the container can grow and that scrolling is enabled */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.container {
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    flex: 1 1 calc(20% - 10px);
+    box-sizing: border-box;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #a6e22e;
+    border-radius: 5px;
+    background-color: #272822;
 }
 
 /* Additional styling for improved visuals */
