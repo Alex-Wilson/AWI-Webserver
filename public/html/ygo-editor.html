@@ -14,53 +14,12 @@
             <a href="https://linkedin.com/in/alex-wilson-pmp-3021a5257" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             <a href="../documents/Alexander-Wilson-CV.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
         </div>
-        <div style="height: 2000px; background: rgba(0, 0, 0, 0.1);">
-            <p>This is just to ensure scrolling is possible.</p>
-        </div>
         <h1>Yu-Gi-Oh! Editor</h1>
-
-        <!-- Search input for filtering cards -->
-        <div class="filter-section">
-            <input type="text" id="search-bar" placeholder="Search for a card..." />
-
-            <!-- Card Type Filter -->
-            <select id="card-type-filter">
-                <option value="">All Types</option>
-                <option value="Monster">Monster</option>
-                <option value="Spell">Spell</option>
-                <option value="Trap">Trap</option>
-            </select>
-
-            <!-- Subtype Filter -->
-            <select id="subtype-filter">
-                <option value="">All Subtypes</option>
-            </select>
-
-            <!-- Rarity Filter -->
-            <select id="rarity-filter">
-                <option value="">All Rarities</option>
-                <option value="Common">Common</option>
-                <option value="Rare">Rare</option>
-                <option value="Super Rare">Super Rare</option>
-                <option value="Ultra Rare">Ultra Rare</option>
-                <option value="Secret Rare">Secret Rare</option>
-            </select>
-
-            <!-- Level Filter (Visible only for Monster cards) -->
-            <select id="level-filter" style="display: none;">
-                <option value="">All Levels</option>
-                <!-- Levels 1 to 12 will be populated by JavaScript -->
-            </select>
-        </div>
 
         <!-- Grid container for the cards -->
         <div id="card-grid" class="grid-container"></div>
     </div>
 
-    
-
     <script src="../js/ygo-editor-app.js"></script>
-    <!-- Add this temporarily inside the body to test scrolling -->
-
 </body>
 </html>

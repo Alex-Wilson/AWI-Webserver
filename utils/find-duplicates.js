@@ -54,6 +54,7 @@ const logCardCount = async () => {
     }
 };
 
+// Fetch missing cards from the API and store them
 const fetchRemainingCards = async (limit = 10000, startOffset = 10000) => {
     let offset = startOffset;
     let totalFetched = 0;
@@ -74,23 +75,19 @@ const fetchRemainingCards = async (limit = 10000, startOffset = 10000) => {
                 break;
             }
 
-            // Log the number of cards fetched in this batch
-            console.log(`Fetched ${data.data.length} cards in this batch.`);
-
             // Save the fetched cards to MongoDB
             for (const card of data.data) {
                 const existingCard = await Card.findOne({ id: card.id });
                 if (existingCard) {
-                    // Skip saving this card if it already exists
-                    continue;
+                    console.log(`Card ${card.name} already exists. Skipping download.`);
+                    continue; // Skip if the card is already stored
                 }
 
-                // Handle missing race
                 if (!card.race) {
-                    card.race = "Unknown";
+                    card.race = "Unknown"; // Handle missing race
                 }
 
-                // Save card data to MongoDB
+                // Save card data as per previous implementation
                 const newCard = new Card(card);
                 await newCard.save();
             }
@@ -98,24 +95,14 @@ const fetchRemainingCards = async (limit = 10000, startOffset = 10000) => {
             totalFetched += data.data.length;
             offset += limit;
 
-            console.log(`Total cards fetched and saved so far: ${totalFetched}`);
+            console.log(`Fetched and saved ${totalFetched} additional cards so far...`);
 
         } catch (error) {
             console.error('Error fetching cards:', error);
-            hasMoreCards = false; // Stop fetching if there is an error
+            hasMoreCards = false; // Stop if there is an error
         }
     }
-
-    // Log the final count of cards in the database
-    try {
-        const finalCount = await Card.countDocuments({});
-        console.log(`Final total count of cards in the database: ${finalCount}`);
-    } catch (error) {
-        console.error('Error counting final documents:', error);
-    }
 };
-
-
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
