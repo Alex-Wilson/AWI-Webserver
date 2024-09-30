@@ -1,26 +1,27 @@
-/* Apply a background image to the entire page */
+/* Background Styling */
 body, html {
-    background-image: url('../images/bg-image.jpg'); /* Replace with a Yu-Gi-Oh! themed background */
-    background-size: cover;
+    background-image: url('../images/bg-image.jpg'); /* Background image */
+    background-size: cover; /* Cover the entire screen */
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: fixed; /* Fixed image */
     background-repeat: no-repeat;
-    color: #e1d9c4; /* Yu-Gi-Oh! golden text color */
+    color: #e1d9c4; /* Golden text */
     font-family: "Courier New", Courier, monospace;
     padding: 20px;
     margin: 0;
-    height: 100%;
-    overflow: auto;
+    height: auto; /* Let the body height grow based on content */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* Container for the main content */
 .container {
-    max-width: 1000px;
-    margin: auto;
+    max-width: 90%; /* Adjust to allow more width */
+    margin: 20px auto; /* Center horizontally with top and bottom margin */
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.85); /* Dark, semi-transparent background */
     border-radius: 8px;
-    min-height: 100vh;
+    min-height: 100vh; /* Ensure container stretches fully */
+    height: auto; /* Allow container height to grow with content */
     box-sizing: border-box;
     color: #e1d9c4; /* Golden text */
 }
@@ -43,24 +44,83 @@ body, html {
 
 h1 {
     text-align: center;
-    color: #ffd700 ; /* Monokai pink, keeping this as a strong contrast */
+    color: #ff00ff; /* Magenta for heading */
+    margin-bottom: 20px;
 }
 
-/* Styling for the card grid */
-.grid-container {
+/* Styling for Filter & Search Section */
+.filter-search-section {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
+    margin-bottom: 20px;
+}
+
+.filter-search-section input[type="text"], 
+.filter-search-section select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ffd700; /* Gold border */
+    outline: none;
+}
+
+/* Styling for Recently Released Card Gallery */
+.recent-cards-gallery {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.recent-cards-gallery h2 {
+    font-size: 24px;
+    color: #ff00ff; /* Magenta heading */
+    margin-bottom: 15px;
+}
+
+#recent-cards {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.recent-card {
+    background-color: #000;
+    border: 1px solid #ff6347; /* Tomato red border for recent cards */
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+}
+
+.recent-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.recent-card p {
+    color: #ffd700; /* Gold text */
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Styling for Main Card Gallery */
+#card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Add space between cards */
+    justify-content: center; /* Center cards within the grid */
 }
 
 .card {
     background-color: #000; /* Black for card container */
-    border: 1px solid #b30000; /* Gold border */
+    border: 1px solid #b30000; /* Red border for contrast */
     border-radius: 5px;
     padding: 10px;
     text-align: center;
-    width: 120px; /* Reduced width for the card container */
+    width: 200px; /* Set card width */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
 }
 
 .card img {
@@ -70,8 +130,23 @@ h1 {
 }
 
 .card p {
-    color: #ffdd00 ; /* Gold for card name */
-    margin-top: 5px;
-    font-size: 12px; /* Reduced font size for card name */
-    padding: 2px; /* Padding around card name reduced */
+    color: #ffdd00; /* Gold for card name */
+    margin-top: 10px;
+    font-size: 14px; /* Adjust font size for readability */
+    padding: 5px;
 }
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .container {
+        max-width: 80%; /* Increase container width on larger screens */
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 70%; /* Further increase container width on extra-large screens */
+    }
+}
+
+

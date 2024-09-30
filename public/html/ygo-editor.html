@@ -4,22 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yu-Gi-Oh! Editor</title>
-    <link rel="stylesheet" href="../css/under-construction-style.css">
+    <!-- Link your CSS files -->
     <link rel="stylesheet" href="../css/ygo-editor-style.css">
 </head>
 <body>
     <div class="container">
+        <!-- Navbar -->
         <div class="navbar">
             <a href="https://github.com/Alex-Wilson" target="_blank" rel="noopener noreferrer">GitHub</a>
             <a href="https://linkedin.com/in/alex-wilson-pmp-3021a5257" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             <a href="../documents/Alexander-Wilson-CV.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
         </div>
+        
+        <!-- Page Title -->
         <h1>Yu-Gi-Oh! Editor</h1>
-
-        <!-- Grid container for the cards -->
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <!-- Search Bar -->
+            <div class="filter-group">
+                <h3>Search</h3>
+                <input type="text" id="search-bar" placeholder="Search for a card..." />
+            </div>
+            
+            <!-- Card Type Filter -->
+            <div id="card-type-filter-group" class="filter-group">
+                <h3>Card Type</h3>
+                <div class="filter-buttons" id="card-type-buttons"></div>
+            </div>
+            
+            <!-- Attribute Filter -->
+            <div id="attribute-filter-group" class="filter-group">
+                <h3>Attribute</h3>
+                <div class="filter-buttons" id="attribute-buttons"></div>
+            </div>
+            
+            <!-- Types of Spells Filter -->
+            <div id="spell-type-filter-group" class="filter-group">
+                <h3>Types of Spells</h3>
+                <div class="filter-buttons" id="spell-type-buttons"></div>
+            </div>
+            
+            <!-- Types of Traps Filter -->
+            <div id="trap-type-filter-group" class="filter-group">
+                <h3>Types of Traps</h3>
+                <div class="filter-buttons" id="trap-type-buttons"></div>
+            </div>
+            
+            <!-- Card Race Filter -->
+            <div id="card-race-filter-group" class="filter-group">
+                <h3>Card Race</h3>
+                <div class="filter-buttons" id="card-race-buttons"></div>
+            </div>
+            
+            <!-- Level Filter -->
+            <div id="level-filter-group" class="filter-group">
+                <h3>Level</h3>
+                <div class="filter-buttons" id="level-buttons"></div>
+            </div>
+            
+            <!-- Link Rating Filter -->
+            <div id="link-rating-filter-group" class="filter-group">
+                <h3>Link Rating</h3>
+                <div class="filter-buttons" id="link-rating-buttons"></div>
+            </div>
+            
+            <!-- Rarity Filter -->
+            <div id="rarity-filter-group" class="filter-group">
+                <h3>Rarity</h3>
+                <div class="filter-buttons" id="rarity-buttons"></div>
+            </div>
+        </div>
+        
+        <!-- Main Card Gallery -->
         <div id="card-grid" class="grid-container"></div>
     </div>
 
+    <!-- Include your JS file -->
     <script src="../js/ygo-editor-app.js"></script>
 </body>
 </html>
