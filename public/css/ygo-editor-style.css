@@ -48,22 +48,63 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Styling for Filter & Search Section */
-.filter-search-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 20px;
+/* Filter Container Styling */
+.filter-section {
+    background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+    border-radius: 10px;
+    padding: 10px; /* Reduce padding */
+    margin-bottom: 20px; /* Reduce margin */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+    border: 2px solid #ffd700; /* Gold border */
+    max-width: 90%;
+    margin: 0 auto 20px auto; /* Centered horizontally */
 }
 
-.filter-search-section input[type="text"], 
-.filter-search-section select {
-    padding: 10px;
-    font-size: 16px;
+/* Filter Group Headings */
+.filter-group h3 {
+    color: #ffd700; /* Gold color for heading */
+    font-size: 16px; /* Smaller font size */
+    margin-bottom: 5px; /* Reduce bottom margin */
+    text-align: left; /* Align text to the left */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styling for Filter Dropdowns */
+.filter-group select {
+    padding: 6px; /* Reduce padding */
+    font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #ffd700; /* Gold border */
+    border: 2px solid #ffd700; /* Gold border */
+    background-color: #000; /* Black background */
+    color: #ffd700; /* Gold text */
     outline: none;
+    margin-bottom: 10px; /* Reduce bottom margin */
+    width: 100%; /* Full width for dropdown */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    appearance: none; /* Remove default styling */
+}
+
+.filter-group select:hover {
+    background-color: #ffd700; /* Gold background on hover */
+    color: #000; /* Black text on hover */
+}
+
+/* Styling for Search Bar */
+.filter-group input[type="text"] {
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    border-radius: 5px;
+    border: 2px solid #ffd700; /* Gold border */
+    background-color: #000;
+    color: #ffd700;
+    outline: none;
+    margin-bottom: 15px; /* Reduce bottom margin */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
 }
 
 /* Styling for Recently Released Card Gallery */
@@ -138,15 +179,25 @@ h1 {
 
 /* Responsive adjustments */
 @media (min-width: 768px) {
-    .container {
-        max-width: 80%; /* Increase container width on larger screens */
+    .filter-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Space between items */
+        justify-content: space-between; /* Space them out evenly */
+    }
+    
+    .filter-group {
+        flex: 1 1 30%; /* Each filter takes up 30% of container width */
+        max-width: 30%; /* Set max width */
+        margin-bottom: 10px; /* Margin between rows */
     }
 }
 
 @media (min-width: 1200px) {
     .container {
-        max-width: 70%; /* Further increase container width on extra-large screens */
+        max-width: 70%; /* Further increase container width */
+    }
+    .filter-section {
+        max-width: 70%; /* Further increase filter section width */
     }
 }
-
-

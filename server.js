@@ -115,6 +115,18 @@ const fetchRemainingCards = async (limit = 10000, startOffset = 10000) => {
     }
 };
 
+// API endpoint to search for cards by name
+app.get('/api/cards/search', async (req, res) => {
+    const searchTerm = req.query.term || '';
+
+    try {
+        const cards = await Card.find({ name: { $regex: searchTerm, $options: 'i' } }); // Case-insensitive search
+        res.json({ cards });
+    } catch (error) {
+        console.error('Error searching for cards:', error);
+        res.status(500).json({ error: 'Error searching for cards' });
+    }
+});
 
 
 // Serve static files
@@ -127,11 +139,10 @@ app.get('/ygo-editor', (req, res) => {
 
 // API route to get cards
 app.get('/api/cards', async (req, res) => {
-    const { page = 1, limit = 50 } = req.query;
-    const skip = (page - 1) * limit;
+    const { offset = 0, limit = 100 } = req.query;
 
     try {
-        const cards = await Card.find().skip(skip).limit(parseInt(limit));
+        const cards = await Card.find().skip(parseInt(offset)).limit(parseInt(limit));
         res.json(cards);
     } catch (error) {
         console.error('Error fetching cards:', error);

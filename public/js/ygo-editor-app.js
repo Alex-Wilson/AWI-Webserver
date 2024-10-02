@@ -1,86 +1,193 @@
 document.addEventListener('DOMContentLoaded', function () {
     const cardGrid = document.getElementById('card-grid');
     const searchBar = document.getElementById('search-bar');
-    let loadedCards = 0; // Track how many cards are loaded
-    const cardsPerBatch = 50; // Number of cards to load at a time
+    let displayedCards = []; // Store only currently displayed cards
+    let displayedCardIds = new Set(); // Track unique card IDs to avoid duplicates
+    let offset = 0; // Track offset for pagination
+    const cardsPerBatch = 100; // Load 100 cards at a time
     let isLoading = false; // Track if a fetch request is in progress
+    let isSearching = false; // Track if a search is active
+    let currentSearchTerm = ''; // Store the current search term
 
-    // Arrays for each filter category (same as before)
-    const cardTypes = ['Monster', 'Spell', 'Trap'];
-    const attributes = ['LIGHT', 'DARK', 'WATER', 'FIRE', 'EARTH', 'WIND', 'DIVINE'];
-    const spellTypes = ['Normal', 'Field', 'Equip', 'Continuous', 'Quick-Play', 'Ritual'];
-    const trapTypes = ['Normal', 'Continuous', 'Counter'];
-    const cardRaces = [
-        'Spellcaster', 'Dragon', 'Zombie', 'Warrior', 'Beast-Warrior', 'Beast', 
-        'Winged Beast', 'Machine', 'Fiend', 'Fairy', 'Insect', 'Dinosaur', 
-        'Reptile', 'Fish', 'Sea Serpent', 'Aqua', 'Pyro', 'Thunder', 'Rock', 
-        'Plant', 'Psychic', 'Wyrm', 'Cyberse', 'Divine-Beast', 'Illusion'
-    ];
-    const levels = Array.from({ length: 12 }, (_, i) => (i + 1).toString()); // Levels 1 to 12
-    const linkRatings = Array.from({ length: 6 }, (_, i) => (i + 1).toString()); // Link Ratings 1 to 6
-    const rarities = ['N', 'R', 'SR', 'UR']; // Rarities
-
-    // Function to create buttons dynamically
-    function createButtons(options, containerId) {
-        const container = document.getElementById(containerId);
-        options.forEach(option => {
-            const button = document.createElement('button');
-            button.textContent = option;
-            button.addEventListener('click', () => {
-                console.log(`Filter selected: ${option}`);
-                // Implement filter logic here
-            });
-            container.appendChild(button);
-        });
+    // Accessibility - Focus on card grid when content updates (called only during scroll events)
+    function focusOnCardGrid() {
+        cardGrid.setAttribute('tabindex', '-1'); // Make cardGrid focusable temporarily
+        cardGrid.focus();
     }
 
-    // Generate buttons for each filter category
-    createButtons(cardTypes, 'card-type-buttons');
-    createButtons(attributes, 'attribute-buttons');
-    createButtons(spellTypes, 'spell-type-buttons');
-    createButtons(trapTypes, 'trap-type-buttons');
-    createButtons(cardRaces, 'card-race-buttons');
-    createButtons(levels, 'level-buttons');
-    createButtons(linkRatings, 'link-rating-buttons');
-    createButtons(rarities, 'rarity-buttons');
-
-    // Fetch a batch of cards from the Yu-Gi-Oh! API
+    // Fetch a batch of cards from your API in alphabetical order
     async function fetchCardsBatch(offset = 0, limit = cardsPerBatch) {
+        if (isLoading) return; // Prevent multiple simultaneous fetches
+
+        // Log when the initial fetch happens
+        if (offset === 0) {
+            console.log('Initial fetch of cards happening.');
+        }
+
         try {
             isLoading = true;
-            const response = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?offset=${offset}&num=${limit}`);
+
+            // Fetch the cards from the API
+            const response = await fetch(`/api/cards?offset=${offset}&limit=${limit}`);
             const data = await response.json();
-            displayCards(data.data);
+
+            // Log API response to verify data structure
+            console.log('API Response:', data);
+
+            if (data && data.length > 0) {
+                // Display only unique cards
+                const uniqueNewCards = data.filter(card => !displayedCardIds.has(card.id));
+                displayCards(uniqueNewCards);
+                
+                // Increment the offset after successful fetch
+                offset += limit;
+            } else {
+                console.log('No cards found in the response.');
+            }
+
             isLoading = false;
+
+            // Focus on the card grid only during scrolling or initial page load
+            if (!isSearching) {
+                focusOnCardGrid();
+            }
         } catch (error) {
             console.error('Error fetching cards:', error);
             isLoading = false;
         }
     }
 
-    // Display cards in the grid
-    function displayCards(cards) {
-        cards.forEach(card => {
-            card.card_images.slice(0, 1).forEach(image => { // Show one printing
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card';
-                cardElement.innerHTML = `
-                    <img src="${image.image_url}" alt="${card.name}">
-                    <p>${card.name}</p>
-                `;
-                cardGrid.appendChild(cardElement);
-            });
-        });
-        loadedCards += cards.length;
+    // Fetch cards by search term from your API
+    async function fetchCardsBySearchTerm(searchTerm, offset = 0, limit = cardsPerBatch) {
+        if (isLoading) return []; // Prevent multiple simultaneous fetches
+        try {
+            isLoading = true;
+            const response = await fetch(`/api/cards/search?term=${encodeURIComponent(searchTerm)}&offset=${offset}&limit=${limit}`);
+            const data = await response.json();
+            isLoading = false;
+            return data.cards || [];
+        } catch (error) {
+            console.error('Error fetching cards:', error);
+            isLoading = false;
+            return [];
+        }
     }
 
-    // Lazy loading: Load more cards when the user scrolls to the bottom
-    window.addEventListener('scroll', () => {
-        if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
-            fetchCardsBatch(loadedCards); // Load the next batch of cards
+    // Display cards in the grid
+    function displayCards(cards) {
+        console.log('Displaying cards:', cards); // Log cards to be displayed
+
+        // Add only unique cards to the grid and track their IDs
+        cards.forEach(card => {
+            if (!displayedCardIds.has(card.id)) {
+                displayedCardIds.add(card.id);
+
+                card.card_images.slice(0, 1).forEach(image => { // Show one printing
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.setAttribute('role', 'button'); // Make cards keyboard focusable
+                    cardElement.setAttribute('tabindex', '0'); // Make cards keyboard focusable
+                    cardElement.innerHTML = `
+                        <img src="${image.image_url}" alt="${card.name}" aria-label="${card.name}">
+                        <p>${card.name}</p>
+                    `;
+                    cardGrid.appendChild(cardElement);
+                });
+            }
+        });
+
+        // Update the displayed cards array
+        displayedCards = displayedCards.concat(cards);
+    }
+
+    // Search local cards
+    function searchLocalCards(searchTerm) {
+        searchTerm = searchTerm.trim().toLowerCase();
+        return displayedCards.filter(card => fuzzyMatch(card.name.toLowerCase(), searchTerm));
+    }
+
+    // Fuzzy search function
+    function fuzzyMatch(cardName, searchTerm) {
+        const cardNameChars = cardName.split('');
+        const searchTermChars = searchTerm.split('');
+        
+        let index = 0;
+        for (const char of searchTermChars) {
+            index = cardNameChars.indexOf(char, index);
+            if (index === -1) return false;
+            index++;
+        }
+        return true;
+    }
+
+    // Search functionality
+    searchBar.addEventListener('input', async function () {
+        currentSearchTerm = searchBar.value.trim().toLowerCase();
+
+        // If there's an active search term, enable searching mode
+        if (currentSearchTerm) {
+            isSearching = true;
+            offset = 0; // Reset offset for search pagination
+            displayedCardIds.clear(); // Clear displayed card IDs for new search
+            displayedCards = []; // Clear the displayed cards array to avoid duplication
+            cardGrid.innerHTML = ''; // Clear the grid for new results
+
+            // Perform a local search first
+            let results = searchLocalCards(currentSearchTerm);
+            displayCards(results);
+
+            // If not enough results and we are searching, fetch more cards based on the search term
+            if (results.length < 10) {
+                const newCards = await fetchCardsBySearchTerm(currentSearchTerm, offset, cardsPerBatch);
+                results = results.concat(newCards);
+                displayCards(results);
+            }
+        } else {
+            // If search term is cleared, reset to normal loading
+            isSearching = false;
+            cardGrid.innerHTML = ''; // Clear the grid
+            displayedCardIds.clear(); // Clear displayed card IDs
+            displayedCards = []; // Clear displayed cards array
+            offset = 0; // Reset offset
+            fetchCardsBatch(offset, cardsPerBatch); // Load the initial set of cards
         }
     });
 
-    // Initialize the card viewer
-    fetchCardsBatch(loadedCards);
+    // Lazy loading: Load more cards when the user scrolls to the bottom
+    window.addEventListener('scroll', async () => {
+        // Check if the user has scrolled near the bottom
+        if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
+            if (isSearching && currentSearchTerm) {
+                // Fetch more cards related to the search term
+                const newCards = await fetchCardsBySearchTerm(currentSearchTerm, offset, cardsPerBatch);
+                
+                // Update offset for pagination
+                offset += cardsPerBatch; 
+                
+                // If new cards are found, display them
+                const uniqueNewCards = newCards.filter(card => !displayedCardIds.has(card.id));
+                if (uniqueNewCards.length > 0) {
+                    displayCards(uniqueNewCards);
+                }
+            } else {
+                // Fetch the next batch of cards if not currently searching
+                fetchCardsBatch(offset, cardsPerBatch);
+                offset += cardsPerBatch; // Increment the offset for pagination
+            }
+        }
+    });
+
+    // Keyboard navigation for accessibility
+    cardGrid.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            const focusedElement = document.activeElement;
+            if (focusedElement.classList.contains('card')) {
+                // Handle card selection or any action you want to perform on Enter/Space
+                console.log(`Card selected: ${focusedElement.textContent}`);
+            }
+        }
+    });
+
+    // Initialize the card viewer with the first 100 cards
+    fetchCardsBatch(offset, cardsPerBatch);
 });
