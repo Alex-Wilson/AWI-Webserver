@@ -191,3 +191,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize the card viewer with the first 100 cards
     fetchCardsBatch(offset, cardsPerBatch);
 });
+
+
+
+// @TODO:
+// 1. Optimize search functionality to reduce latency.
+// 2. ???Implement debounce for search input to limit API calls.
+// 3. Cache search results to avoid redundant API requests.
+// 4. Improve error handling and user feedback for failed fetch requests.
+// 5. Add loading indicators for better user experience during data fetch.
+// 6. Refactor code to separate concerns and improve readability.
+// 7. Have an html element to indicate the number of cards that are being returned/fetched.
+// 8. Add a filter option for each of the card properties.
+// 9. Add a sort option for each of the card properties.
+// 10. Add a way to reset the search and filters.
