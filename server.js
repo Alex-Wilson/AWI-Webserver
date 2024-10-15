@@ -120,14 +120,16 @@ app.get('/api/cards/search', async (req, res) => {
     const searchTerm = req.query.term || '';
 
     try {
-        const cards = await Card.find({ name: { $regex: searchTerm, $options: 'i' } }); // Case-insensitive search
+        // Normalize the search term to make it more flexible
+        const normalizedTerm = searchTerm.toLowerCase().trim();
+        const regex = new RegExp(normalizedTerm.split(' ').join('.*'), 'i');
+        const cards = await Card.find({ name: { $regex: regex } }); // Case-insensitive, flexible search
         res.json({ cards });
     } catch (error) {
         console.error('Error searching for cards:', error);
         res.status(500).json({ error: 'Error searching for cards' });
     }
 });
-
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

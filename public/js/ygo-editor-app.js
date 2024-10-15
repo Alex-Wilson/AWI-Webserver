@@ -1,305 +1,147 @@
-
-let debounceTimeout;
-const debounce = (func, delay) => {
-    return (...args) => {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(() => func.apply(this, args), delay);
-    };
-};
-
-const handleSearchInput = debounce(async (event) => {
-    const query = event.target.value.trim().toLowerCase();
-    await handleSearch(query);
-}, 300);
-
-document.getElementById('search-bar').addEventListener('input', handleSearchInput);
-
-
-
-const searchCache = {};
-
-const fetchResults = async (query) => {
-    if (searchCache[query]) return searchCache[query];
-    try {
-        const response = await fetch(`your-api-endpoint?q=${query}`);
-        const data = await response.json();
-        searchCache[query] = data;
-        return data;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        return [];
-    }
-};
-
-
-
-const showLoadingIndicator = () => {
-    // Display a loading indicator to the user
-    document.getElementById('loading-indicator').style.display = 'block';
-};
-
-const hideLoadingIndicator = () => {
-    // Hide the loading indicator
-    document.getElementById('loading-indicator').style.display = 'none';
-};
-
-
-
-const handleError = (error) => {
-    console.error("Error occurred:", error);
-    alert("An error occurred while fetching data. Please try again later.");
-};
-
-
-
-const handleSearch = async (query) => {
-    try {
-        showLoadingIndicator();
-        const results = await fetchResults(query);
-        hideLoadingIndicator();
-        displayResults(results);
-    } catch (error) {
-        hideLoadingIndicator();
-        handleError(error);
-    }
-};
-
-
-
-const filterCards = () => {
-    const type = document.getElementById('card-type-filter').value;
-    const attribute = document.getElementById('attribute-filter').value;
-    const race = document.getElementById('card-race-filter').value;
-    // Add other filters as required
-    // Filter logic goes here
-};
-
-const sortCards = (criteria) => {
-    // Sort logic based on criteria
-};
-
-document.getElementById('card-type-filter').addEventListener('change', filterCards);
-document.getElementById('attribute-filter').addEventListener('change', filterCards);
-document.getElementById('card-race-filter').addEventListener('change', filterCards);
-// Add event listeners for all necessary filters and sorts
-
-
-
-const resetFilters = () => {
-    document.getElementById('search-bar').value = '';
-    document.getElementById('card-type-filter').value = '';
-    document.getElementById('attribute-filter').value = '';
-    // Reset all other filters as needed
-    handleSearch('');
-};
-
-document.getElementById('reset-button').addEventListener('click', resetFilters);
-
-
 document.addEventListener('DOMContentLoaded', function () {
-const cardGrid = document.getElementById('card-grid');
-const searchBar = document.getElementById('search-bar');
-let displayedCards = []; // Store only currently displayed cards
-let displayedCardIds = new Set(); // Track unique card IDs to avoid duplicates
-let offset = 0; // Track offset for pagination
-const cardsPerBatch = 100; // Load 100 cards at a time
-let isLoading = false; // Track if a fetch request is in progress
-let isSearching = false; // Track if a search is active
-let currentSearchTerm = ''; // Store the current search term
+    // Get the search bar and card grid elements
+    const searchBar = document.getElementById('search-bar');
+    const cardGrid = document.getElementById('card-grid');
+    const modal = document.getElementById('card-modal');
+    const modalContent = document.getElementById('card-modal-content');
+    const modalClose = document.getElementById('card-modal-close');
 
-// Accessibility - Focus on card grid when content updates (called only during scroll events)
-function focusOnCardGrid() {
-    cardGrid.setAttribute('tabindex', '-1'); // Make cardGrid focusable temporarily
-    cardGrid.focus();
-}
-
-// Fetch a batch of cards from your API in alphabetical order
-async function fetchCardsBatch(offset = 0, limit = cardsPerBatch) {
-    if (isLoading) return; // Prevent multiple simultaneous fetches
-
-    // Log when the initial fetch happens
-    if (offset === 0) {
-        console.log('Initial fetch of cards happening.');
+    // Check if card grid element exists
+    if (!cardGrid) {
+        console.error('Card grid element not found!'); // Log an error message if it doesn't exist
+        return; // Stop running the script if the element is missing
     }
 
-    try {
-        isLoading = true;
+    let offset = 0; // Track the offset for pagination
+    const cardsPerBatch = 50; // Number of cards to load per batch
+    let isLoading = false; // Track if a fetch request is in progress
+    let isSearching = false; // Track if a search is currently active
+    let searchResults = []; // Store search results for lazy loading
+    const searchLazyLoadLimit = 300; // Limit for search results before enabling lazy loading
+    let currentSearchTerm = ''; // Track the current search term
 
-        // Fetch the cards from the API
-        const response = await fetch(`/api/cards?offset=${offset}&limit=${limit}`);
-        const data = await response.json();
+    // Function to display a batch of cards in the card grid
+    async function displayCardsBatch() {
+        if (isLoading || isSearching) return; // Prevent multiple simultaneous fetches or general loading during a search
 
-        // Log API response to verify data structure
-        console.log('API Response:', data);
-
-        if (data && data.length > 0) {
-            // Display only unique cards
-            const uniqueNewCards = data.filter(card => !displayedCardIds.has(card.id));
-            displayCards(uniqueNewCards);
-            
-            // Increment the offset after successful fetch
-            offset += limit;
-        } else {
-            console.log('No cards found in the response.');
+        try {
+            isLoading = true;
+            // Fetch the next batch of cards from the server
+            const response = await fetch(`/api/cards?offset=${offset}&limit=${cardsPerBatch}`);
+            const data = await response.json(); // Convert the response to JSON
+            displayCards(data || []); // Display the cards using the fetched data
+            offset += cardsPerBatch; // Increment the offset for the next batch
+            isLoading = false;
+        } catch (error) {
+            console.error("Error occurred while fetching data:", error); // Log any errors that occur
+            alert("An error occurred while fetching data. Please try again later."); // Show an alert to the user if something goes wrong
+            isLoading = false;
         }
-
-        isLoading = false;
-
-        // Focus on the card grid only during scrolling or initial page load
-        if (!isSearching) {
-            focusOnCardGrid();
-        }
-    } catch (error) {
-        console.error('Error fetching cards:', error);
-        isLoading = false;
     }
-}
 
-// Fetch cards by search term from your API
-async function fetchCardsBySearchTerm(searchTerm, offset = 0, limit = cardsPerBatch) {
-    if (isLoading) return []; // Prevent multiple simultaneous fetches
-    try {
-        isLoading = true;
-        const response = await fetch(`/api/cards/search?term=${encodeURIComponent(searchTerm)}&offset=${offset}&limit=${limit}`);
-        const data = await response.json();
-        isLoading = false;
-        return data.cards || [];
-    } catch (error) {
-        console.error('Error fetching cards:', error);
-        isLoading = false;
-        return [];
-    }
-}
+    // Function to display the cards in the card grid
+    function displayCards(cards) {
+        // Clear the card grid before displaying cards
+        cardGrid.innerHTML = '';
+        // Loop through each card and create an element to display it
+        cards.forEach(card => {
+            card.card_images.forEach((image, index) => {
+                const cardElement = document.createElement('div'); // Create a new div for the card
+                cardElement.className = 'card'; // Add a class name to style the card
 
-// Display cards in the grid
-function displayCards(cards) {
-    console.log('Displaying cards:', cards); // Log cards to be displayed
-
-    // Add only unique cards to the grid and track their IDs
-    cards.forEach(card => {
-        if (!displayedCardIds.has(card.id)) {
-            displayedCardIds.add(card.id);
-
-            card.card_images.slice(0, 1).forEach(image => { // Show one printing
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card';
-                cardElement.setAttribute('role', 'button'); // Make cards keyboard focusable
-                cardElement.setAttribute('tabindex', '0'); // Make cards keyboard focusable
+                // Set the inner HTML of the card element with the card's image
                 cardElement.innerHTML = `
-                    <img src="${image.image_url}" alt="${card.name}" aria-label="${card.name}">
-                    <p>${card.name}</p>
+                    <img src="${image.image_url}" alt="${card.name} - Version ${index + 1}" class="card-image">
+                    <p>${card.name} - Version ${index + 1}</p>
                 `;
+
+                // Add event listener for click effect to show larger image and set information
+                cardElement.addEventListener('click', () => {
+                    modalContent.innerHTML = `
+                        <img src="${image.image_url}" alt="${card.name} - Version ${index + 1}" class="card-image-large">
+                        <h2>${card.name} - Version ${index + 1}</h2>
+                        <p>Sets: ${card.card_sets.map(set => set.set_name).join(', ')}</p>
+                    `;
+                    modal.style.display = 'block'; // Show the modal
+                });
+
+                // Add the card element to the card grid
                 cardGrid.appendChild(cardElement);
             });
+        });
+    }
+
+    // Add event listener to close the modal
+    if (modalClose) {
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none'; // Hide the modal
+        });
+    }
+
+    // Add event listener to the search bar to filter cards by name
+    if (searchBar) {
+        searchBar.addEventListener('input', function () {
+            currentSearchTerm = searchBar.value.trim().toLowerCase(); // Get the search term entered by the user
+            if (currentSearchTerm) {
+                isSearching = true; // Set searching state to true
+                offset = 0; // Reset offset for new search
+                searchCards(currentSearchTerm); // Perform the search
+            } else {
+                // If the search bar is cleared, reset to displaying all loaded cards
+                isSearching = false; // Set searching state to false
+                offset = 0; // Reset offset for pagination
+                searchResults = []; // Clear search results to start fresh
+                displayCardsBatch(); // Load the initial set of cards
+            }
+        });
+    }
+
+    // Function to search cards from the server
+    async function searchCards(query, searchOffset = 0) {
+        try {
+            isLoading = true;
+            // Fetch the search results from the server
+            const response = await fetch(`/api/cards/search?term=${encodeURIComponent(query)}&offset=${searchOffset}&limit=${cardsPerBatch}`);
+            const data = await response.json(); // Convert the response to JSON
+            if (searchOffset === 0) {
+                searchResults = data.cards || []; // Store initial search results
+                if (searchResults.length > searchLazyLoadLimit) {
+                    // Display the initial 300 search results and enable lazy loading for the rest
+                    displayCards(searchResults.slice(0, 300));
+                    offset = 300;
+                } else {
+                    // Display all search results if less than or equal to 300
+                    displayCards(searchResults);
+                    offset = searchResults.length;
+                }
+            } else {
+                // Add new search results for lazy loading
+                searchResults = searchResults.concat(data.cards || []);
+                displayCards(searchResults.slice(0, offset + cardsPerBatch)); // Display current loaded search results
+                offset += cardsPerBatch; // Increment the offset for the next batch
+            }
+            isLoading = false;
+        } catch (error) {
+            console.error("Error occurred while searching for cards:", error); // Log any errors that occur
+            alert("An error occurred while searching for cards. Please try again later."); // Show an alert to the user if something goes wrong
+            isLoading = false;
+        }
+    }
+
+    // Display the initial 50 cards when the page loads
+    displayCardsBatch();
+
+    // Add an event listener for scrolling to implement lazy loading
+    window.addEventListener('scroll', async () => {
+        // Check if the user has scrolled near the bottom of the page
+        if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
+            if (isSearching && searchResults.length > offset) {
+                // Lazy load additional search results if applicable
+                await searchCards(currentSearchTerm, offset);
+            } else if (!isSearching) {
+                // Load the next batch of cards if not currently searching
+                await displayCardsBatch();
+            }
         }
     });
-
-    // Update the displayed cards array
-    displayedCards = displayedCards.concat(cards);
-}
-
-// Search local cards
-function searchLocalCards(searchTerm) {
-    searchTerm = searchTerm.trim().toLowerCase();
-    return displayedCards.filter(card => fuzzyMatch(card.name.toLowerCase(), searchTerm));
-}
-
-// Fuzzy search function
-function fuzzyMatch(cardName, searchTerm) {
-    const cardNameChars = cardName.split('');
-    const searchTermChars = searchTerm.split('');
-    
-    let index = 0;
-    for (const char of searchTermChars) {
-        index = cardNameChars.indexOf(char, index);
-        if (index === -1) return false;
-        index++;
-    }
-    return true;
-}
-
-// Search functionality
-searchBar.addEventListener('input', async function () {
-    currentSearchTerm = searchBar.value.trim().toLowerCase();
-
-    // If there's an active search term, enable searching mode
-    if (currentSearchTerm) {
-        isSearching = true;
-        offset = 0; // Reset offset for search pagination
-        displayedCardIds.clear(); // Clear displayed card IDs for new search
-        displayedCards = []; // Clear the displayed cards array to avoid duplication
-        cardGrid.innerHTML = ''; // Clear the grid for new results
-
-        // Perform a local search first
-        let results = searchLocalCards(currentSearchTerm);
-        displayCards(results);
-
-        // If not enough results and we are searching, fetch more cards based on the search term
-        if (results.length < 10) {
-            const newCards = await fetchCardsBySearchTerm(currentSearchTerm, offset, cardsPerBatch);
-            results = results.concat(newCards);
-            displayCards(results);
-        }
-    } else {
-        // If search term is cleared, reset to normal loading
-        isSearching = false;
-        cardGrid.innerHTML = ''; // Clear the grid
-        displayedCardIds.clear(); // Clear displayed card IDs
-        displayedCards = []; // Clear displayed cards array
-        offset = 0; // Reset offset
-        fetchCardsBatch(offset, cardsPerBatch); // Load the initial set of cards
-    }
 });
-
-// Lazy loading: Load more cards when the user scrolls to the bottom
-window.addEventListener('scroll', async () => {
-    // Check if the user has scrolled near the bottom
-    if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
-        if (isSearching && currentSearchTerm) {
-            // Fetch more cards related to the search term
-            const newCards = await fetchCardsBySearchTerm(currentSearchTerm, offset, cardsPerBatch);
-            
-            // Update offset for pagination
-            offset += cardsPerBatch; 
-            
-            // If new cards are found, display them
-            const uniqueNewCards = newCards.filter(card => !displayedCardIds.has(card.id));
-            if (uniqueNewCards.length > 0) {
-                displayCards(uniqueNewCards);
-            }
-        } else {
-            // Fetch the next batch of cards if not currently searching
-            fetchCardsBatch(offset, cardsPerBatch);
-            offset += cardsPerBatch; // Increment the offset for pagination
-        }
-    }
-});
-
-// Keyboard navigation for accessibility
-cardGrid.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-        const focusedElement = document.activeElement;
-        if (focusedElement.classList.contains('card')) {
-            // Handle card selection or any action you want to perform on Enter/Space
-            console.log(`Card selected: ${focusedElement.textContent}`);
-        }
-    }
-});
-
-// Initialize the card viewer with the first 100 cards
-fetchCardsBatch(offset, cardsPerBatch);
-});
-
-
-
-// @TODO:
-// 1. Optimize search functionality to reduce latency.
-// 2. ???Implement debounce for search input to limit API calls.
-// 3. Cache search results to avoid redundant API requests.
-// 4. Improve error handling and user feedback for failed fetch requests.
-// 5. Add loading indicators for better user experience during data fetch.
-// 6. Refactor code to separate concerns and improve readability.
-// 7. Have an html element to indicate the number of cards that are being returned/fetched.
-// 8. Add a filter option for each of the card properties.
-// 9. Add a sort option for each of the card properties.
-// 10. Add a way to reset the search and filters.

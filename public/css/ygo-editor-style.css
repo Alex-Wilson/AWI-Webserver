@@ -107,45 +107,6 @@ h1 {
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
 }
 
-/* Styling for Recently Released Card Gallery */
-.recent-cards-gallery {
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.recent-cards-gallery h2 {
-    font-size: 24px;
-    color: #ff00ff; /* Magenta heading */
-    margin-bottom: 15px;
-}
-
-#recent-cards {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.recent-card {
-    background-color: #000;
-    border: 1px solid #ff6347; /* Tomato red border for recent cards */
-    border-radius: 5px;
-    padding: 10px;
-    text-align: center;
-    width: 150px;
-}
-
-.recent-card img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-.recent-card p {
-    color: #ffd700; /* Gold text */
-    font-size: 14px;
-    margin-top: 10px;
-}
-
 /* Styling for Main Card Gallery */
 #card-grid {
     display: flex;
@@ -162,6 +123,7 @@ h1 {
     text-align: center;
     width: 200px; /* Set card width */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+    cursor: pointer; /* Add pointer cursor to indicate clickable */
 }
 
 .card img {
@@ -175,6 +137,59 @@ h1 {
     margin-top: 10px;
     font-size: 14px; /* Adjust font size for readability */
     padding: 5px;
+}
+
+/* Modal Styling for Card Details */
+#card-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9); /* Dark overlay */
+}
+
+#card-modal-content {
+    background-color: #111;
+    margin: 10% auto;
+    padding: 20px;
+    border: 2px solid #ffd700; /* Gold border */
+    width: 80%;
+    max-width: 600px;
+    color: #ffd700; /* Gold text */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#card-modal img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+#card-modal .close {
+    color: #ffd700;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#card-modal .close:hover,
+#card-modal .close:focus {
+    color: #ff0000; /* Red when hovered */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#card-modal .pack-info {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #ffdd00; /* Gold for pack info */
 }
 
 /* Responsive adjustments */

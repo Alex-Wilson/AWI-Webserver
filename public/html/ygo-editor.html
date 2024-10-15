@@ -19,125 +19,135 @@
         <!-- Page Title -->
         <h1>Yu-Gi-Oh! Editor</h1>
         
-            <!-- Filter Section -->
-    <div class="filter-section">
-        <!-- Search Bar -->
-        <div class="filter-group">
-            <h3>Search</h3>
-            <input type="text" id="search-bar" placeholder="Search for a card..." />
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <!-- Search Bar -->
+            <div class="filter-group">
+                <h3>Search</h3>
+                <input type="text" id="search-bar" placeholder="Search for a card..." />
+            </div>
+            
+            <!-- Card Type Filter -->
+            <div class="filter-group">
+                <h3>Card Type</h3>
+                <select id="card-type-filter">
+                    <option value="">All Card Types</option>
+                    <option value="Monster">Monster</option>
+                    <option value="Spell">Spell</option>
+                    <option value="Trap">Trap</option>
+                </select>
+            </div>
+            
+            <!-- Attribute Filter -->
+            <div class="filter-group">
+                <h3>Attribute</h3>
+                <select id="attribute-filter">
+                    <option value="">All Attributes</option>
+                    <option value="LIGHT">LIGHT</option>
+                    <option value="DARK">DARK</option>
+                    <option value="WATER">WATER</option>
+                    <option value="FIRE">FIRE</option>
+                    <option value="EARTH">EARTH</option>
+                    <option value="WIND">WIND</option>
+                    <option value="DIVINE">DIVINE</option>
+                </select>
+            </div>
+            
+            <!-- Types of Spells Filter -->
+            <div class="filter-group">
+                <h3>Types of Spells</h3>
+                <select id="spell-type-filter">
+                    <option value="">All Spell Types</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Field">Field</option>
+                    <option value="Equip">Equip</option>
+                    <option value="Continuous">Continuous</option>
+                    <option value="Quick-Play">Quick-Play</option>
+                    <option value="Ritual">Ritual</option>
+                </select>
+            </div>
+            
+            <!-- Types of Traps Filter -->
+            <div class="filter-group">
+                <h3>Types of Traps</h3>
+                <select id="trap-type-filter">
+                    <option value="">All Trap Types</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Continuous">Continuous</option>
+                    <option value="Counter">Counter</option>
+                </select>
+            </div>
+            
+            <!-- Card Race Filter -->
+            <div class="filter-group">
+                <h3>Card Race</h3>
+                <select id="card-race-filter">
+                    <option value="">All Card Races</option>
+                    <option value="Spellcaster">Spellcaster</option>
+                    <option value="Dragon">Dragon</option>
+                    <option value="Zombie">Zombie</option>
+                    <!-- Add other races as options... -->
+                </select>
+            </div>
+            
+            <!-- Level Filter -->
+            <div class="filter-group">
+                <h3>Level</h3>
+                <select id="level-filter">
+                    <option value="">All Levels</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            
+            <!-- Link Rating Filter -->
+            <div class="filter-group">
+                <h3>Link Rating</h3>
+                <select id="link-rating-filter">
+                    <option value="">All Link Ratings</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+            
+            <!-- Rarity Filter -->
+            <div class="filter-group">
+                <h3>Rarity</h3>
+                <select id="rarity-filter">
+                    <option value="">All Rarities</option>
+                    <option value="N">N</option>
+                    <option value="R">R</option>
+                    <option value="SR">SR</option>
+                    <option value="UR">UR</option>
+                </select>
+            </div>
         </div>
         
-        <!-- Card Type Filter -->
-        <div class="filter-group">
-            <h3>Card Type</h3>
-            <select id="card-type-filter">
-                <option value="">All Card Types</option>
-                <option value="Monster">Monster</option>
-                <option value="Spell">Spell</option>
-                <option value="Trap">Trap</option>
-            </select>
-        </div>
-        
-        <!-- Attribute Filter -->
-        <div class="filter-group">
-            <h3>Attribute</h3>
-            <select id="attribute-filter">
-                <option value="">All Attributes</option>
-                <option value="LIGHT">LIGHT</option>
-                <option value="DARK">DARK</option>
-                <option value="WATER">WATER</option>
-                <option value="FIRE">FIRE</option>
-                <option value="EARTH">EARTH</option>
-                <option value="WIND">WIND</option>
-                <option value="DIVINE">DIVINE</option>
-            </select>
-        </div>
-        
-        <!-- Types of Spells Filter -->
-        <div class="filter-group">
-            <h3>Types of Spells</h3>
-            <select id="spell-type-filter">
-                <option value="">All Spell Types</option>
-                <option value="Normal">Normal</option>
-                <option value="Field">Field</option>
-                <option value="Equip">Equip</option>
-                <option value="Continuous">Continuous</option>
-                <option value="Quick-Play">Quick-Play</option>
-                <option value="Ritual">Ritual</option>
-            </select>
-        </div>
-        
-        <!-- Types of Traps Filter -->
-        <div class="filter-group">
-            <h3>Types of Traps</h3>
-            <select id="trap-type-filter">
-                <option value="">All Trap Types</option>
-                <option value="Normal">Normal</option>
-                <option value="Continuous">Continuous</option>
-                <option value="Counter">Counter</option>
-            </select>
-        </div>
-        
-        <!-- Card Race Filter -->
-        <div class="filter-group">
-            <h3>Card Race</h3>
-            <select id="card-race-filter">
-                <option value="">All Card Races</option>
-                <option value="Spellcaster">Spellcaster</option>
-                <option value="Dragon">Dragon</option>
-                <option value="Zombie">Zombie</option>
-                <!-- Add other races as options... -->
-            </select>
-        </div>
-        
-        <!-- Level Filter -->
-        <div class="filter-group">
-            <h3>Level</h3>
-            <select id="level-filter">
-                <option value="">All Levels</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-            </select>
-        </div>
-        
-        <!-- Link Rating Filter -->
-        <div class="filter-group">
-            <h3>Link Rating</h3>
-            <select id="link-rating-filter">
-                <option value="">All Link Ratings</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-            </select>
-        </div>
-        
-        <!-- Rarity Filter -->
-        <div class="filter-group">
-            <h3>Rarity</h3>
-            <select id="rarity-filter">
-                <option value="">All Rarities</option>
-                <option value="N">N</option>
-                <option value="R">R</option>
-                <option value="SR">SR</option>
-                <option value="UR">UR</option>
-            </select>
-        </div>
-    </div>
         <!-- Main Card Gallery -->
         <div id="card-grid" class="grid-container"></div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="card-modal">
+        <div id="card-modal-content">
+            <span class="close">&times;</span> <!-- This is the close button -->
+            <img id="card-modal-img" src="" alt="Card Image">
+            <div class="pack-info" id="pack-info"></div>
+        </div>
     </div>
 
     <!-- Include your JS file -->
