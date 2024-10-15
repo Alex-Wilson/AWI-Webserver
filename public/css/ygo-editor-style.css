@@ -162,6 +162,7 @@ h1 {
     color: #ffd700; /* Gold text */
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative; /* Ensure close button positions relative to modal content */
 }
 
 #card-modal img {
@@ -171,12 +172,20 @@ h1 {
     margin-bottom: 15px;
 }
 
-#card-modal .close {
-    color: #ffd700;
-    float: right;
-    font-size: 28px;
+#card-modal .close {$1
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #ffff00; /* Bright yellow color */
+    font-size: 40px;
     font-weight: bold;
     cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.7); /* Add background for visibility */
+    padding: 10px;
+    border-radius: 50%;
+    z-index: 2000; /* Ensure it appears on top of other elements */
+    box-shadow: 0 0 10px #000; /* Add shadow for better contrast */
+    border: 2px solid #ffff00; /* Bright yellow border for additional visibility */
 }
 
 #card-modal .close:hover,
@@ -186,10 +195,8 @@ h1 {
     cursor: pointer;
 }
 
-#card-modal .pack-info {
-    margin-top: 10px;
-    font-size: 16px;
-    color: #ffdd00; /* Gold for pack info */
+#card-modal .pack-info {$1
+    white-space: pre-line; /* Allow new lines in text */
 }
 
 /* Responsive adjustments */
