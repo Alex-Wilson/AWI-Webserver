@@ -16,15 +16,15 @@
         </div>
         <h1>Welcome to AlexWilson.info</h1>
 
-        <!-- Exploit attempt section -->
+        <!-- Updated "curl" command section -->
         <p class="command-line">
             <span class="prompt">&gt;</span>
-            <span class="typing">sudo exploit --target=alexwilson.info --payload=/exploit.py</span>
+            <span class="typing">curl https://alexwilson.info --retry 3 --retry-delay 5</span>
         </p>
 
         <!-- Loading bar and error message -->
         <p id="loading-bar" class="loading-bar">[>                     ] 0%</p>
-        <p id="error-message" class="error"> >> Error: HTTP Response Status Code 503: Service Unavailable - "Service Under Construction"</p>
+        <p id="error-message" class="error"> >> Error: HTTP Response Status Code 503: Service Unavailable</p>
 
         <!-- "I am studying" message -->
         <p class="prompt" id="study-message" style="display: none;">>> I am studying for Network+ and Security+, trying to update this site daily!</p>

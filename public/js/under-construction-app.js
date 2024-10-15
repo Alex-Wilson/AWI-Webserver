@@ -1,21 +1,33 @@
 // under-construction-app.js
 document.addEventListener('DOMContentLoaded', function() {
+
+    function updateProgressBar(loadingBar, progress) {
+        const filled = '='.repeat(progress / 5);
+        const empty = ' '.repeat(20 - progress / 5);
+        loadingBar.textContent = `[${filled}>${empty}] ${progress}%`;
+    }
+
     function runAnimation() {
         const typingElement = document.querySelector('.typing');
         const loadingBar = document.getElementById('loading-bar');
         const errorMessage = document.getElementById('error-message');
         const studyMessage = document.getElementById('study-message');
-        
+
         // Reset initial states
         typingElement.style.width = '0';
         loadingBar.style.display = 'none';
         errorMessage.style.display = 'none';
         errorMessage.style.opacity = '0';
         studyMessage.style.display = 'none';
-        
+
+        // Adding aria-live for screen readers
+        loadingBar.setAttribute('aria-live', 'polite');
+        errorMessage.setAttribute('aria-live', 'assertive');
+        studyMessage.setAttribute('aria-live', 'polite');
+
         // Start the typing animation
         typingElement.style.animation = 'none';
-        typingElement.offsetHeight; /* trigger reflow */
+        typingElement.offsetHeight; // trigger reflow
         typingElement.style.animation = null;
 
         typingElement.addEventListener('animationend', function() {
@@ -41,9 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 } else {
                     progress += 5;
-                    const filled = '='.repeat(progress / 5);
-                    const empty = ' '.repeat(20 - progress / 5);
-                    loadingBar.textContent = `[${filled}>${empty}] ${progress}%`;
+                    updateProgressBar(loadingBar, progress);
                 }
             }, 200); // Adjust the speed of the loading bar here
         }, { once: true });
