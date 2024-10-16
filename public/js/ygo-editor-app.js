@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('card-modal');
     const modalContent = document.getElementById('card-modal-content');
     const modalClose = document.getElementById('card-modal-close');
+    const cardTypeFilter = document.getElementById('card-type-filter'); // Card type filter element
 
     if (!cardGrid) {
         console.error('Card grid element not found!');
@@ -18,6 +19,17 @@ document.addEventListener('DOMContentLoaded', function () {
     let searchResults = [];
     const searchLazyLoadLimit = 300;
     let currentSearchTerm = '';
+    let currentCardType = ''; // Track the current card type filter
+
+    // Update card type filter dropdown with the correct card types
+    if (cardTypeFilter) {
+        cardTypeFilter.innerHTML = `
+            <option value="all">All Card Types</option>
+            <option value="monster">Monster</option>
+            <option value="spell">Spell</option>
+            <option value="trap">Trap</option>
+        `;
+    }
 
     // Retrieve search term from localStorage and set it in the search bar
     const savedSearchTerm = localStorage.getItem('searchTerm');
@@ -38,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             isLoading = true;
             const response = await fetch(`/api/cards?offset=${offset}&limit=${cardsPerBatch}`);
             const data = await response.json();
-            displayCards(data || []);
+            appendCards(data || []);
             offset += cardsPerBatch;
             isLoading = false;
         } catch (error) {
@@ -48,10 +60,36 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Function to display the cards in the card grid
-    function displayCards(cards) {
-        cardGrid.innerHTML = '';
-        cards.forEach(card => {
+    // Function to append cards to the card grid
+    function appendCards(cards) {
+        const filteredCards = cards.filter(card => {
+            if (!currentCardType || currentCardType === 'all') return true;
+
+            const cardType = card.type.toLowerCase();
+            switch (currentCardType) {
+                case 'monster':
+                    return cardType.includes('monster') || 
+                           cardType.includes('fusion') || 
+                           cardType.includes('synchro') || 
+                           cardType.includes('xyz') || 
+                           cardType.includes('link') || 
+                           cardType.includes('ritual') || 
+                           cardType.includes('pendulum');
+                case 'spell':
+                    return cardType.includes('spell');
+                case 'trap':
+                    return cardType.includes('trap');
+                default:
+                    return false;
+            }
+        });
+
+        if (filteredCards.length === 0 && offset === 0) {
+            cardGrid.innerHTML = '<p>No cards match the selected criteria.</p>';
+            return;
+        }
+
+        filteredCards.forEach(card => {
             card.card_images.forEach((image, index) => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
@@ -164,36 +202,74 @@ document.addEventListener('DOMContentLoaded', function () {
             if (currentSearchTerm) {
                 isSearching = true;
                 offset = 0;
+                cardGrid.innerHTML = ''; // Clear existing cards before search
                 searchCards(currentSearchTerm);
             } else {
                 isSearching = false;
                 offset = 0;
                 searchResults = [];
                 localStorage.removeItem('searchTerm'); // Remove the saved search term if search is cleared
-                displayCardsBatch();
+                cardGrid.innerHTML = ''; // Clear existing cards
+                fetchAndDisplayFilteredCards();
             }
         });
+    }
+
+    // Add event listener to the card type filter to filter cards by type
+    if (cardTypeFilter) {
+        cardTypeFilter.addEventListener('change', function () {
+            currentCardType = cardTypeFilter.value.toLowerCase();
+            offset = 0;
+            cardGrid.innerHTML = ''; // Clear existing cards
+            if (currentSearchTerm) {
+                searchCards(currentSearchTerm); // Search with the current term and card type filter
+            } else {
+                fetchAndDisplayFilteredCards(); // Fetch and display cards based on the selected type
+            }
+        });
+    }
+
+    // Function to fetch and display cards based on the selected card type
+    async function fetchAndDisplayFilteredCards() {
+        if (isLoading) return;
+
+        try {
+            isLoading = true;
+            const typeQuery = currentCardType && currentCardType !== 'all' ? `&type=${encodeURIComponent(currentCardType)}` : '';
+            const searchQuery = currentSearchTerm ? `&term=${encodeURIComponent(currentSearchTerm)}` : '';
+            const response = await fetch(`/api/cards?offset=${offset}&limit=${cardsPerBatch}${typeQuery}${searchQuery}`);
+            const data = await response.json();
+            appendCards(data || []);
+            offset += cardsPerBatch;
+            isLoading = false;
+        } catch (error) {
+            console.error("Error occurred while fetching filtered cards:", error);
+            alert("An error occurred while fetching filtered cards. Please try again later.");
+            isLoading = false;
+        }
     }
 
     // Function to search cards from the server
     async function searchCards(query, searchOffset = 0) {
         try {
             isLoading = true;
-            const response = await fetch(`/api/cards/search?term=${encodeURIComponent(query)}&offset=${searchOffset}&limit=${cardsPerBatch}`);
+            const typeQuery = currentCardType && currentCardType !== 'all' ? `&type=${encodeURIComponent(currentCardType)}` : '';
+            const response = await fetch(`/api/cards/search?term=${encodeURIComponent(query)}&offset=${searchOffset}&limit=${cardsPerBatch}${typeQuery}`);
             const data = await response.json();
 
             if (searchOffset === 0) {
                 searchResults = data.cards || [];
+                cardGrid.innerHTML = ''; // Clear existing cards before displaying search results
                 if (searchResults.length > searchLazyLoadLimit) {
-                    displayCards(searchResults.slice(0, 300));
+                    appendCards(searchResults.slice(0, 300));
                     offset = 300;
                 } else {
-                    displayCards(searchResults);
+                    appendCards(searchResults);
                     offset = searchResults.length;
                 }
             } else {
                 searchResults = searchResults.concat(data.cards || []);
-                displayCards(searchResults.slice(0, offset + cardsPerBatch));
+                appendCards(searchResults.slice(0, offset + cardsPerBatch));
                 offset += cardsPerBatch;
             }
 
