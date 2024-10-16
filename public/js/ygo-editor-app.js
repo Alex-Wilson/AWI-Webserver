@@ -145,13 +145,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         modalContent.appendChild(rarityFilter);
 
-        // Create and append the sets list
+        // Create and append the sets list with general TCGPlayer search links
         const packsList = document.createElement('ul');
         packsList.id = 'packs-list';
         card.card_sets.forEach(set => {
             const listItem = document.createElement('li');
-            listItem.textContent = `${set.set_name} - ${set.set_rarity}`;
+            listItem.textContent = `${set.set_name} - Set-Code (${set.set_code}) - Rarity (${set.set_rarity})`;
             listItem.setAttribute('data-rarity', set.set_rarity);
+
+            // Add TCGPlayer search link for the specific set
+            const tcgLink = document.createElement('a');
+            tcgLink.href = `https://www.tcgplayer.com/search/yugioh/product?ProductName=${encodeURIComponent(card.name)}`;
+            tcgLink.target = '_blank';
+            tcgLink.textContent = ' (Buy on TCGPlayer)';
+            listItem.appendChild(tcgLink);
+
             packsList.appendChild(listItem);
         });
         modalContent.appendChild(packsList);
