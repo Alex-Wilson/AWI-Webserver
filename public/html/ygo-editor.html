@@ -26,20 +26,10 @@
         
         <!-- Filter Section (Grid Layout) -->
         <div class="filter-section">
-            <!-- Card Type Filter -->
-            <div class="filter-group">
-                <h3>Card Type</h3>
-                <select id="card-type-filter">
-                    <option value="">All Card Types</option>
-                    <option value="Monster">Monster</option>
-                    <option value="Spell">Spell</option>
-                    <option value="Trap">Trap</option>
-                </select>
-            </div>
-            
+
             <!-- Rarity Filter -->
             <div class="filter-group">
-                <h3>Rarity</h3>
+                <h3>Card Rarity</h3>
                 <select id="rarity-filter">
                     <option value="">All Rarities</option>
                     <option value="Common">Common</option>
@@ -56,32 +46,18 @@
                     <option value="Prismatic Secret Rare">Prismatic Secret Rare</option>
                 </select>
             </div>
-            
-            <!-- Spell Type Filter -->
+
+            <!-- Card Type Filter -->
             <div class="filter-group">
-                <h3>Spell Type</h3>
-                <select id="spell-type-filter">
-                    <option value="">All Spell Types</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Field">Field</option>
-                    <option value="Equip">Equip</option>
-                    <option value="Continuous">Continuous</option>
-                    <option value="Quick-Play">Quick-Play</option>
-                    <option value="Ritual">Ritual</option>
+                <h3>Card Type</h3>
+                <select id="card-type-filter">
+                    <option value="">All Card Types</option>
+                    <option value="Monster">Monster</option>
+                    <option value="Spell">Spell</option>
+                    <option value="Trap">Trap</option>
                 </select>
             </div>
-            
-            <!-- Trap Type Filter -->
-            <div class="filter-group">
-                <h3>Trap Type</h3>
-                <select id="trap-type-filter">
-                    <option value="">All Trap Types</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Continuous">Continuous</option>
-                    <option value="Counter">Counter</option>
-                </select>
-            </div>
-            
+
             <!-- Monster Type Filter -->
             <div class="filter-group">
                 <h3>Monster Type</h3>
@@ -95,12 +71,36 @@
                     <option value="XYZ">XYZ</option>
                     <option value="Pendulum">Pendulum</option>
                     <option value="Link">Link</option>
+                    <option value="Link">Token</option>
                 </select>
             </div>
-            
-            <!-- Card Race Filter -->
+
+            <!-- Monster Sub-Type Filter -->
             <div class="filter-group">
-                <h3>Card Race</h3>
+                <h3>Monster Sub-Type</h3>
+                <select id="monster-sub-type-type-filter">
+                    <option value="">All Monster Sub-Types</option>
+                    <option value="Normal">Tuner</option>
+                    <option value="Effect">Special Summoned</option>
+                </select>
+            </div>
+
+            <!-- Monster Ability Filter -->
+            <div class="filter-group">
+                <h3>Monster Ability</h3>
+                <select id="monster-sub-type-type-filter">
+                    <option value="">All Monster Abiltiies</option>
+                    <option value="Normal">Spirit</option>
+                    <option value="Normal">Toon</option>
+                    <option value="Normal">Union</option>
+                    <option value="Normal">Gemini</option>
+                    <option value="Normal">Flip</option>
+                </select>
+            </div>
+
+            <!-- Monster Race Filter -->
+            <div class="filter-group">
+                <h3>Monster Race</h3>
                 <select id="card-race-filter">
                     <option value="">All Card Races</option>
                     <option value="Aqua">Aqua</option>
@@ -129,12 +129,28 @@
                     <option value="Zombie">Zombie</option>
                 </select>
             </div>
-            
-            <!-- Level Filter -->
+
+            <!-- Monster Attribute Filter -->
             <div class="filter-group">
-                <h3>Level</h3>
+                <h3>Monster Attribute</h3>
+                <select id="card-attribute-filter">
+                    <option value="">All Card Attributes</option>
+                    <option value="Dark">Dark</option>
+                    <option value="Divine">Divine</option>
+                    <option value="Earth">Earth</option>
+                    <option value="Fire">Fire</option>
+                    <option value="Light">Light</option>
+                    <option value="Water">Water</option>
+                    <option value="Wind">Wind</option>
+                </select>
+            </div>
+
+            <!-- Monster Level Filter -->
+            <div class="filter-group">
+                <h3>Monster Level (Stars)</h3>
                 <select id="level-filter">
                     <option value="">All Levels</option>
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -149,10 +165,32 @@
                     <option value="12">12</option>
                 </select>
             </div>
-            
+
+            <!-- Monster Rank Filter -->
+            <div class="filter-group">
+                <h3>Monster Rank (XYZ Stars)</h3>
+                <select id="level-filter">
+                    <option value="">All Levels</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                </select>
+            </div>
+
             <!-- Link Rating Filter -->
             <div class="filter-group">
-                <h3>Link Rating</h3>
+                <h3>Monster Link Rating</h3>
                 <select id="link-rating-filter">
                     <option value="">All Link Ratings</option>
                     <option value="1">1</option>
@@ -163,23 +201,52 @@
                     <option value="6">6</option>
                 </select>
             </div>
-            
-            <!-- Attribute Filter -->
+
+            <!-- Penedulum Scale Filter-->
             <div class="filter-group">
-                <h3>Attribute</h3>
-                <select id="attribute-filter">
-                    <option value="">All Attributes</option>
-                    <option value="LIGHT">LIGHT</option>
-                    <option value="DARK">DARK</option>
-                    <option value="WATER">WATER</option>
-                    <option value="FIRE">FIRE</option>
-                    <option value="EARTH">EARTH</option>
-                    <option value="WIND">WIND</option>
-                    <option value="DIVINE">DIVINE</option>
-                    <option value="CHAOS">CHAOS</option>
-                    <option value="DIVINE-BEAST">DIVINE-BEAST</option>
+                <h3>Monster Pendulum Scale</h3>
+                <select id="pendulum-scale-filter">
+                    <option value="">All Pendulum Scales</option>
+                    <option value="0">1</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11 (OCG ONLY)</option>
+                    <option value="12">12</option>
                 </select>
             </div>
+
+            <!-- Spell Type Filter -->
+            <div class="filter-group">
+                <h3>Spell Type</h3>
+                <select id="spell-type-filter">
+                    <option value="">All Spell Types</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Field">Field</option>
+                    <option value="Equip">Equip</option>
+                    <option value="Continuous">Continuous</option>
+                    <option value="Quick-Play">Quick-Play</option>
+                    <option value="Ritual">Ritual</option>
+                </select>
+            </div>
+            
+            <!-- Trap Type Filter -->
+            <div class="filter-group">
+                <h3>Trap Type</h3>
+                <select id="trap-type-filter">
+                    <option value="">All Trap Types</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Continuous">Continuous</option>
+                    <option value="Counter">Counter</option>
+                </select>
+            </div>            
         </div>
     
         <!-- Main Card Gallery -->
