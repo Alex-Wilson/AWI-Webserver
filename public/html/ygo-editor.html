@@ -19,14 +19,13 @@
         <!-- Page Title -->
         <h1>Yu-Gi-Oh! Editor</h1>
         
-        <!-- Filter Section -->
+        <!-- Search Bar (Full Width) -->
+        <div class="search-bar">
+            <input type="text" id="search-bar" placeholder="Search by card name or set code...">
+        </div>
+        
+        <!-- Filter Section (Grid Layout) -->
         <div class="filter-section">
-            <!-- Search Bar -->
-            <div class="filter-group">
-                <h3>Search</h3>
-                <input type="text" id="search-bar" placeholder="Search for a card..." />
-            </div>
-            
             <!-- Card Type Filter -->
             <div class="filter-group">
                 <h3>Card Type</h3>
@@ -38,24 +37,29 @@
                 </select>
             </div>
             
-            <!-- Attribute Filter -->
+            <!-- Rarity Filter -->
             <div class="filter-group">
-                <h3>Attribute</h3>
-                <select id="attribute-filter">
-                    <option value="">All Attributes</option>
-                    <option value="LIGHT">LIGHT</option>
-                    <option value="DARK">DARK</option>
-                    <option value="WATER">WATER</option>
-                    <option value="FIRE">FIRE</option>
-                    <option value="EARTH">EARTH</option>
-                    <option value="WIND">WIND</option>
-                    <option value="DIVINE">DIVINE</option>
+                <h3>Rarity</h3>
+                <select id="rarity-filter">
+                    <option value="">All Rarities</option>
+                    <option value="Common">Common</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Super Rare">Super Rare</option>
+                    <option value="Ultra Rare">Ultra Rare</option>
+                    <option value="Secret Rare">Secret Rare</option>
+                    <option value="Ultimate Rare">Ultimate Rare</option>
+                    <option value="Ghost Rare">Ghost Rare</option>
+                    <option value="Platinum Rare">Platinum Rare</option>
+                    <option value="Gold Rare">Gold Rare</option>
+                    <option value="Collector's Rare">Collector's Rare</option>
+                    <option value="Starlight Rare">Starlight Rare</option>
+                    <option value="Prismatic Secret Rare">Prismatic Secret Rare</option>
                 </select>
             </div>
             
-            <!-- Types of Spells Filter -->
+            <!-- Spell Type Filter -->
             <div class="filter-group">
-                <h3>Types of Spells</h3>
+                <h3>Spell Type</h3>
                 <select id="spell-type-filter">
                     <option value="">All Spell Types</option>
                     <option value="Normal">Normal</option>
@@ -67,9 +71,9 @@
                 </select>
             </div>
             
-            <!-- Types of Traps Filter -->
+            <!-- Trap Type Filter -->
             <div class="filter-group">
-                <h3>Types of Traps</h3>
+                <h3>Trap Type</h3>
                 <select id="trap-type-filter">
                     <option value="">All Trap Types</option>
                     <option value="Normal">Normal</option>
@@ -78,15 +82,51 @@
                 </select>
             </div>
             
+            <!-- Monster Type Filter -->
+            <div class="filter-group">
+                <h3>Monster Type</h3>
+                <select id="monster-type-filter">
+                    <option value="">All Monster Types</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Effect">Effect</option>
+                    <option value="Ritual">Ritual</option>
+                    <option value="Fusion">Fusion</option>
+                    <option value="Synchro">Synchro</option>
+                    <option value="XYZ">XYZ</option>
+                    <option value="Pendulum">Pendulum</option>
+                    <option value="Link">Link</option>
+                </select>
+            </div>
+            
             <!-- Card Race Filter -->
             <div class="filter-group">
                 <h3>Card Race</h3>
                 <select id="card-race-filter">
                     <option value="">All Card Races</option>
-                    <option value="Spellcaster">Spellcaster</option>
+                    <option value="Aqua">Aqua</option>
+                    <option value="Beast">Beast</option>
+                    <option value="Beast-Warrior">Beast-Warrior</option>
+                    <option value="Cyberse">Cyberse</option>
+                    <option value="Dinosaur">Dinosaur</option>
+                    <option value="Divine-Beast">Divine-Beast</option>
                     <option value="Dragon">Dragon</option>
+                    <option value="Fairy">Fairy</option>
+                    <option value="Fiend">Fiend</option>
+                    <option value="Fish">Fish</option>
+                    <option value="Insect">Insect</option>
+                    <option value="Machine">Machine</option>
+                    <option value="Plant">Plant</option>
+                    <option value="Psychic">Psychic</option>
+                    <option value="Pyro">Pyro</option>
+                    <option value="Reptile">Reptile</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Sea Serpent">Sea Serpent</option>
+                    <option value="Spellcaster">Spellcaster</option>
+                    <option value="Thunder">Thunder</option>
+                    <option value="Warrior">Warrior</option>
+                    <option value="Winged Beast">Winged Beast</option>
+                    <option value="Wyrm">Wyrm</option>
                     <option value="Zombie">Zombie</option>
-                    <!-- Add other races as options... -->
                 </select>
             </div>
             
@@ -124,19 +164,24 @@
                 </select>
             </div>
             
-            <!-- Rarity Filter -->
+            <!-- Attribute Filter -->
             <div class="filter-group">
-                <h3>Rarity</h3>
-                <select id="rarity-filter">
-                    <option value="">All Rarities</option>
-                    <option value="N">N</option>
-                    <option value="R">R</option>
-                    <option value="SR">SR</option>
-                    <option value="UR">UR</option>
+                <h3>Attribute</h3>
+                <select id="attribute-filter">
+                    <option value="">All Attributes</option>
+                    <option value="LIGHT">LIGHT</option>
+                    <option value="DARK">DARK</option>
+                    <option value="WATER">WATER</option>
+                    <option value="FIRE">FIRE</option>
+                    <option value="EARTH">EARTH</option>
+                    <option value="WIND">WIND</option>
+                    <option value="DIVINE">DIVINE</option>
+                    <option value="CHAOS">CHAOS</option>
+                    <option value="DIVINE-BEAST">DIVINE-BEAST</option>
                 </select>
             </div>
         </div>
-        
+    
         <!-- Main Card Gallery -->
         <div id="card-grid" class="grid-container"></div>
     </div>

@@ -48,16 +48,38 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Search Bar Styling */
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 2px solid #ffd700; /* Gold border */
+    background-color: #000;
+    color: #ffd700;
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+}
+
 /* Filter Container Styling */
 .filter-section {
-    background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
-    border-radius: 10px;
-    padding: 10px; /* Reduce padding */
-    margin-bottom: 20px; /* Reduce margin */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-    border: 2px solid #ffd700; /* Gold border */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Create a 3-column grid */
+    gap: 20px; /* Space between grid items */
     max-width: 90%;
     margin: 0 auto 20px auto; /* Centered horizontally */
+}
+
+.filter-group {
+    background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid #ffd700; /* Gold border */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); /* Subtle shadow */
 }
 
 /* Filter Group Headings */
@@ -91,20 +113,6 @@ h1 {
 .filter-group select:hover {
     background-color: #ffd700; /* Gold background on hover */
     color: #000; /* Black text on hover */
-}
-
-/* Styling for Search Bar */
-.filter-group input[type="text"] {
-    padding: 8px;
-    font-size: 16px;
-    width: 100%;
-    border-radius: 5px;
-    border: 2px solid #ffd700; /* Gold border */
-    background-color: #000;
-    color: #ffd700;
-    outline: none;
-    margin-bottom: 15px; /* Reduce bottom margin */
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow */
 }
 
 /* Styling for Main Card Gallery */
@@ -172,7 +180,7 @@ h1 {
     margin-bottom: 15px;
 }
 
-#card-modal .close {$1
+#card-modal .close {
     position: absolute;
     top: 15px;
     right: 20px;
@@ -195,7 +203,7 @@ h1 {
     cursor: pointer;
 }
 
-#card-modal .pack-info {$1
+#card-modal .pack-info {
     white-space: pre-line; /* Allow new lines in text */
 }
 
