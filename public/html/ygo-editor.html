@@ -21,7 +21,7 @@
         
         <!-- Search Bar (Full Width) -->
         <div class="search-bar">
-            <input type="text" id="search-bar" placeholder="Search by card name or set code...">
+            <input type="text" id="search-bar" placeholder="Search by card name...">
         </div>
         
         <!-- Filter Section (Grid Layout) -->
@@ -63,46 +63,46 @@
                 <h3>Monster Type</h3>
                 <select id="monster-type-filter">
                     <option value="">All Monster Types</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Effect">Effect</option>
-                    <option value="Ritual">Ritual</option>
-                    <option value="Fusion">Fusion</option>
-                    <option value="Synchro">Synchro</option>
-                    <option value="XYZ">XYZ</option>
-                    <option value="Pendulum">Pendulum</option>
-                    <option value="Link">Link</option>
-                    <option value="Link">Token</option>
+                    <option value="Normal Monster">Normal Monster</option>
+                    <option value="Effect Monster">Effect Monster</option>
+                    <option value="Ritual Monster">Ritual Monster</option>
+                    <option value="Fusion Monster">Fusion Monster</option>
+                    <option value="Synchro Monster">Synchro Monster</option>
+                    <option value="XYZ Monster">XYZ Monster</option>
+                    <option value="Pendulum Monster">Pendulum Monster</option>
+                    <option value="Link Monster">Link Monster</option>
+                    <option value="Token">Token</option>
                 </select>
             </div>
 
             <!-- Monster Sub-Type Filter -->
             <div class="filter-group">
                 <h3>Monster Sub-Type</h3>
-                <select id="monster-sub-type-type-filter">
+                <select id="monster-sub-type-filter">
                     <option value="">All Monster Sub-Types</option>
-                    <option value="Normal">Tuner</option>
-                    <option value="Effect">Special Summoned</option>
+                    <option value="Tuner">Tuner</option>
+                    <option value="Special Summon">Special Summon</option>
                 </select>
             </div>
 
             <!-- Monster Ability Filter -->
             <div class="filter-group">
                 <h3>Monster Ability</h3>
-                <select id="monster-sub-type-type-filter">
-                    <option value="">All Monster Abiltiies</option>
-                    <option value="Normal">Spirit</option>
-                    <option value="Normal">Toon</option>
-                    <option value="Normal">Union</option>
-                    <option value="Normal">Gemini</option>
-                    <option value="Normal">Flip</option>
+                <select id="monster-ability-filter">
+                    <option value="">All Monster Abilities</option>
+                    <option value="Spirit">Spirit</option>
+                    <option value="Toon">Toon</option>
+                    <option value="Union">Union</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Flip">Flip</option>
                 </select>
             </div>
 
             <!-- Monster Race Filter -->
             <div class="filter-group">
                 <h3>Monster Race</h3>
-                <select id="card-race-filter">
-                    <option value="">All Card Races</option>
+                <select id="monster-race-filter">
+                    <option value="">All Monster Races</option>
                     <option value="Aqua">Aqua</option>
                     <option value="Beast">Beast</option>
                     <option value="Beast-Warrior">Beast-Warrior</option>
@@ -133,24 +133,24 @@
             <!-- Monster Attribute Filter -->
             <div class="filter-group">
                 <h3>Monster Attribute</h3>
-                <select id="card-attribute-filter">
-                    <option value="">All Card Attributes</option>
-                    <option value="Dark">Dark</option>
-                    <option value="Divine">Divine</option>
-                    <option value="Earth">Earth</option>
-                    <option value="Fire">Fire</option>
-                    <option value="Light">Light</option>
-                    <option value="Water">Water</option>
-                    <option value="Wind">Wind</option>
+                <select id="monster-attribute-filter">
+                    <option value="">All Monster Attributes</option>
+                    <option value="DARK">DARK</option>
+                    <option value="DIVINE">DIVINE</option>
+                    <option value="EARTH">EARTH</option>
+                    <option value="FIRE">FIRE</option>
+                    <option value="LIGHT">LIGHT</option>
+                    <option value="WATER">WATER</option>
+                    <option value="WIND">WIND</option>
                 </select>
             </div>
 
             <!-- Monster Level Filter -->
             <div class="filter-group">
                 <h3>Monster Level (Stars)</h3>
-                <select id="level-filter">
+                <select id="monster-level-filter">
                     <option value="">All Levels</option>
-                    <option value="0">0</option>
+                    <!-- Levels 1 to 12 -->
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -169,8 +169,9 @@
             <!-- Monster Rank Filter -->
             <div class="filter-group">
                 <h3>Monster Rank (XYZ Stars)</h3>
-                <select id="level-filter">
-                    <option value="">All Levels</option>
+                <select id="monster-rank-filter">
+                    <option value="">All Ranks</option>
+                    <!-- Ranks 0 to 13 -->
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -193,6 +194,7 @@
                 <h3>Monster Link Rating</h3>
                 <select id="link-rating-filter">
                     <option value="">All Link Ratings</option>
+                    <!-- Link Ratings 1 to 6 -->
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -202,12 +204,13 @@
                 </select>
             </div>
 
-            <!-- Penedulum Scale Filter-->
+            <!-- Pendulum Scale Filter -->
             <div class="filter-group">
                 <h3>Monster Pendulum Scale</h3>
                 <select id="pendulum-scale-filter">
                     <option value="">All Pendulum Scales</option>
-                    <option value="0">1</option>
+                    <!-- Pendulum Scales 0 to 12 -->
+                    <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -218,7 +221,7 @@
                     <option value="8">8</option>
                     <option value="9">9</option>
                     <option value="10">10</option>
-                    <option value="11">11 (OCG ONLY)</option>
+                    <option value="11">11</option>
                     <option value="12">12</option>
                 </select>
             </div>
@@ -246,9 +249,18 @@
                     <option value="Continuous">Continuous</option>
                     <option value="Counter">Counter</option>
                 </select>
-            </div>            
+            </div>
+
+            <!-- Reset Filters Button -->
+            <div class="filter-group">
+                <button id="reset-filters-button">Reset All Filters</button>
+            </div>
+
         </div>
-    
+        
+        <!-- Message Area to Display Number of Cards -->
+        <div id="cards-count-message" class="cards-count-message"></div>
+        
         <!-- Main Card Gallery -->
         <div id="card-grid" class="grid-container"></div>
     </div>
@@ -256,6 +268,7 @@
     <!-- Modal Structure -->
     <div id="card-modal">
         <div id="card-modal-content">
+            <span id="card-modal-close" class="modal-close-button">&times;</span>
             <img id="card-modal-img" src="" alt="Card Image">
             <div class="pack-info" id="pack-info"></div>
         </div>

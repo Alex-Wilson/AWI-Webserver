@@ -1,95 +1,162 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Get the search bar and card grid elements
+    // Get references to elements
     const searchBar = document.getElementById('search-bar');
     const cardGrid = document.getElementById('card-grid');
     const modal = document.getElementById('card-modal');
     const modalContent = document.getElementById('card-modal-content');
-    const modalClose = document.getElementById('card-modal-close');
-    const cardTypeFilter = document.getElementById('card-type-filter'); // Card type filter element
 
-    if (!cardGrid) {
-        console.error('Card grid element not found!');
-        return;
-    }
+    // Filter elements
+    const rarityFilter = document.getElementById('rarity-filter');
+    const cardTypeFilter = document.getElementById('card-type-filter');
+    const monsterTypeFilter = document.getElementById('monster-type-filter');
+    const monsterSubTypeFilter = document.getElementById('monster-sub-type-filter');
+    const monsterAbilityFilter = document.getElementById('monster-ability-filter');
+    const monsterRaceFilter = document.getElementById('monster-race-filter');
+    const monsterAttributeFilter = document.getElementById('monster-attribute-filter');
+    const monsterLevelFilter = document.getElementById('monster-level-filter');
+    const monsterRankFilter = document.getElementById('monster-rank-filter');
+    const linkRatingFilter = document.getElementById('link-rating-filter');
+    const pendulumScaleFilter = document.getElementById('pendulum-scale-filter');
+    const spellTypeFilter = document.getElementById('spell-type-filter');
+    const trapTypeFilter = document.getElementById('trap-type-filter');
 
+    // Reset Filters Button
+    const resetFiltersButton = document.getElementById('reset-filters-button');
+
+    // Message area to display number of cards
+    const cardsCountMessage = document.getElementById('cards-count-message');
+
+    // Variables
     let offset = 0;
     const cardsPerBatch = 50;
     let isLoading = false;
     let isSearching = false;
     let searchResults = [];
-    const searchLazyLoadLimit = 300;
     let currentSearchTerm = '';
-    let currentCardType = ''; // Track the current card type filter
-
-    // Update card type filter dropdown with the correct card types
-    if (cardTypeFilter) {
-        cardTypeFilter.innerHTML = `
-            <option value="all">All Card Types</option>
-            <option value="monster">Monster</option>
-            <option value="spell">Spell</option>
-            <option value="trap">Trap</option>
-        `;
-    }
 
     // Retrieve search term from localStorage and set it in the search bar
     const savedSearchTerm = localStorage.getItem('searchTerm');
     if (savedSearchTerm) {
         searchBar.value = savedSearchTerm;
-        currentSearchTerm = savedSearchTerm.trim().toLowerCase();
+        currentSearchTerm = savedSearchTerm.trim();
         isSearching = true;
         searchCards(currentSearchTerm); // Trigger the search using the saved term
     } else {
-        displayCardsBatch(); // Display the initial batch if there's no saved search term
+        fetchAndDisplayFilteredCards(); // Display the initial batch if there's no saved search term
     }
 
-    // Function to display a batch of cards in the card grid
-    async function displayCardsBatch() {
-        if (isLoading || isSearching) return;
+    // Function to get current filter values
+    function getCurrentFilters() {
+        return {
+            rarity: rarityFilter ? rarityFilter.value : '',
+            cardType: cardTypeFilter ? cardTypeFilter.value : '',
+            monsterType: monsterTypeFilter ? monsterTypeFilter.value : '',
+            monsterSubType: monsterSubTypeFilter ? monsterSubTypeFilter.value : '',
+            monsterAbility: monsterAbilityFilter ? monsterAbilityFilter.value : '',
+            monsterRace: monsterRaceFilter ? monsterRaceFilter.value : '',
+            monsterAttribute: monsterAttributeFilter ? monsterAttributeFilter.value : '',
+            monsterLevel: monsterLevelFilter ? monsterLevelFilter.value : '',
+            monsterRank: monsterRankFilter ? monsterRankFilter.value : '',
+            linkRating: linkRatingFilter ? linkRatingFilter.value : '',
+            pendulumScale: pendulumScaleFilter ? pendulumScaleFilter.value : '',
+            spellType: spellTypeFilter ? spellTypeFilter.value : '',
+            trapType: trapTypeFilter ? trapTypeFilter.value : ''
+        };
+    }
+
+    // Function to display a batch of cards
+    async function fetchAndDisplayFilteredCards() {
+        if (isLoading) return;
 
         try {
             isLoading = true;
-            const response = await fetch(`/api/cards?offset=${offset}&limit=${cardsPerBatch}`);
+            const filters = getCurrentFilters();
+            const queryParams = new URLSearchParams({
+                offset: offset,
+                limit: cardsPerBatch,
+                term: currentSearchTerm,
+                ...filters
+            });
+
+            const response = await fetch(`/api/cards?${queryParams.toString()}`);
             const data = await response.json();
+
+            if (offset === 0) {
+                cardGrid.innerHTML = ''; // Clear existing cards
+            }
+
+            if (data.length === 0) {
+                // No more cards to fetch
+                isLoading = false;
+                return;
+            }
+
             appendCards(data || []);
-            offset += cardsPerBatch;
+            offset += data.length; // Update offset based on actual number of cards returned
+            updateCardsCountMessage(offset);
+
             isLoading = false;
         } catch (error) {
-            console.error("Error occurred while fetching data:", error);
-            alert("An error occurred while fetching data. Please try again later.");
+            console.error("Error occurred while fetching filtered cards:", error);
+            alert("An error occurred while fetching filtered cards. Please try again later.");
             isLoading = false;
         }
     }
 
-    // Function to append cards to the card grid
-    function appendCards(cards) {
-        const filteredCards = cards.filter(card => {
-            if (!currentCardType || currentCardType === 'all') return true;
+    // Function to search cards from the server
+    async function searchCards(query, searchOffset = 0) {
+        if (isLoading) return;
 
-            const cardType = card.type.toLowerCase();
-            switch (currentCardType) {
-                case 'monster':
-                    return cardType.includes('monster') || 
-                           cardType.includes('fusion') || 
-                           cardType.includes('synchro') || 
-                           cardType.includes('xyz') || 
-                           cardType.includes('link') || 
-                           cardType.includes('ritual') || 
-                           cardType.includes('pendulum');
-                case 'spell':
-                    return cardType.includes('spell');
-                case 'trap':
-                    return cardType.includes('trap');
-                default:
-                    return false;
+        try {
+            isLoading = true;
+            const filters = getCurrentFilters();
+            const queryParams = new URLSearchParams({
+                term: query,
+                offset: searchOffset,
+                limit: cardsPerBatch,
+                ...filters
+            });
+
+            const response = await fetch(`/api/cards/search?${queryParams.toString()}`);
+            const data = await response.json();
+
+            if (searchOffset === 0) {
+                searchResults = data.cards || [];
+                cardGrid.innerHTML = ''; // Clear existing cards before displaying search results
+                appendCards(searchResults);
+                offset = data.cards.length;
+            } else {
+                if (data.cards.length === 0) {
+                    // No more cards to fetch
+                    isLoading = false;
+                    return;
+                }
+                searchResults = searchResults.concat(data.cards || []);
+                appendCards(data.cards || []); // Append only the new cards
+                offset += data.cards.length;
             }
-        });
 
-        if (filteredCards.length === 0 && offset === 0) {
+            updateCardsCountMessage(searchResults.length);
+
+            isLoading = false;
+        } catch (error) {
+            console.error("Error occurred while searching for cards:", error);
+            alert("An error occurred while searching for cards. Please try again later.");
+            isLoading = false;
+        }
+    }
+
+    // Function to append cards to the grid
+    function appendCards(cards) {
+        if (cards.length === 0 && offset === 0) {
             cardGrid.innerHTML = '<p>No cards match the selected criteria.</p>';
+            updateCardsCountMessage(0);
             return;
         }
 
-        filteredCards.forEach(card => {
+        cards.forEach(card => {
+            if (!card.card_images || card.card_images.length === 0) return;
+
             card.card_images.forEach((image, index) => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
@@ -111,6 +178,16 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clear modal content
         modalContent.innerHTML = '';
 
+        // Create and append the close button
+        const closeButton = document.createElement('span');
+        closeButton.id = 'card-modal-close';
+        closeButton.className = 'modal-close-button';
+        closeButton.innerHTML = '&times;';
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        modalContent.appendChild(closeButton);
+
         // Create and append the image
         const cardImage = document.createElement('img');
         cardImage.src = image.image_url;
@@ -130,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalContent.appendChild(rarityFilterLabel);
 
         const rarityFilter = document.createElement('select');
-        rarityFilter.id = 'rarity-filter';
+        rarityFilter.id = 'rarity-filter-modal';
 
         // Get unique rarities for the card
         const uniqueRarities = [...new Set(card.card_sets.map(set => set.set_rarity))];
@@ -145,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         modalContent.appendChild(rarityFilter);
 
-        // Create and append the sets list with general TCGPlayer search links
+        // Create and append the sets list with TCGPlayer links
         const packsList = document.createElement('ul');
         packsList.id = 'packs-list';
         card.card_sets.forEach(set => {
@@ -173,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.style.display = 'block';
     }
 
-    // Function to filter packs by rarity
+    // Function to filter packs by rarity in the modal
     function filterPacksByRarity(rarity) {
         const packsListElement = modalContent.querySelector('#packs-list');
         const listItems = packsListElement.querySelectorAll('li');
@@ -188,121 +265,210 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Add event listener to close the modal
-    if (modalClose) {
-        modalClose.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
-
+    // Add event listener to close the modal when clicking outside of it
     window.addEventListener('click', (event) => {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     });
 
-    // Add event listener to the search bar to filter cards by name
+    // Add event listener to the search bar to filter cards by name with debounce
     if (searchBar) {
+        let searchTimeout;
         searchBar.addEventListener('input', function () {
-            currentSearchTerm = searchBar.value.trim().toLowerCase();
-            localStorage.setItem('searchTerm', currentSearchTerm); // Save the search term
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearchTerm = searchBar.value.trim();
+                localStorage.setItem('searchTerm', currentSearchTerm); // Save the search term
 
-            if (currentSearchTerm) {
-                isSearching = true;
                 offset = 0;
-                cardGrid.innerHTML = ''; // Clear existing cards before search
-                searchCards(currentSearchTerm);
-            } else {
-                isSearching = false;
-                offset = 0;
-                searchResults = [];
-                localStorage.removeItem('searchTerm'); // Remove the saved search term if search is cleared
-                cardGrid.innerHTML = ''; // Clear existing cards
-                fetchAndDisplayFilteredCards();
-            }
-        });
-    }
 
-    // Add event listener to the card type filter to filter cards by type
-    if (cardTypeFilter) {
-        cardTypeFilter.addEventListener('change', function () {
-            currentCardType = cardTypeFilter.value.toLowerCase();
-            offset = 0;
-            cardGrid.innerHTML = ''; // Clear existing cards
-            if (currentSearchTerm) {
-                searchCards(currentSearchTerm); // Search with the current term and card type filter
-            } else {
-                fetchAndDisplayFilteredCards(); // Fetch and display cards based on the selected type
-            }
-        });
-    }
-
-    // Function to fetch and display cards based on the selected card type
-    async function fetchAndDisplayFilteredCards() {
-        if (isLoading) return;
-
-        try {
-            isLoading = true;
-            const typeQuery = currentCardType && currentCardType !== 'all' ? `&type=${encodeURIComponent(currentCardType)}` : '';
-            const searchQuery = currentSearchTerm ? `&term=${encodeURIComponent(currentSearchTerm)}` : '';
-            const response = await fetch(`/api/cards?offset=${offset}&limit=${cardsPerBatch}${typeQuery}${searchQuery}`);
-            const data = await response.json();
-            appendCards(data || []);
-            offset += cardsPerBatch;
-            isLoading = false;
-        } catch (error) {
-            console.error("Error occurred while fetching filtered cards:", error);
-            alert("An error occurred while fetching filtered cards. Please try again later.");
-            isLoading = false;
-        }
-    }
-
-    // Function to search cards from the server
-    async function searchCards(query, searchOffset = 0) {
-        try {
-            isLoading = true;
-            const typeQuery = currentCardType && currentCardType !== 'all' ? `&type=${encodeURIComponent(currentCardType)}` : '';
-            const response = await fetch(`/api/cards/search?term=${encodeURIComponent(query)}&offset=${searchOffset}&limit=${cardsPerBatch}${typeQuery}`);
-            const data = await response.json();
-
-            if (searchOffset === 0) {
-                searchResults = data.cards || [];
-                cardGrid.innerHTML = ''; // Clear existing cards before displaying search results
-                if (searchResults.length > searchLazyLoadLimit) {
-                    appendCards(searchResults.slice(0, 300));
-                    offset = 300;
+                if (currentSearchTerm) {
+                    isSearching = true;
+                    searchResults = []; // Clear previous search results
+                    searchCards(currentSearchTerm);
                 } else {
-                    appendCards(searchResults);
-                    offset = searchResults.length;
+                    isSearching = false;
+                    searchResults = [];
+                    localStorage.removeItem('searchTerm'); // Remove the saved search term if search is cleared
+                    cardGrid.innerHTML = ''; // Clear existing cards
+                    fetchAndDisplayFilteredCards();
                 }
-            } else {
-                searchResults = searchResults.concat(data.cards || []);
-                appendCards(searchResults.slice(0, offset + cardsPerBatch));
-                offset += cardsPerBatch;
-            }
+            }, 300); // Delay of 300ms
+        });
+    }
 
-            isLoading = false;
-        } catch (error) {
-            console.error("Error occurred while searching for cards:", error);
-            alert("An error occurred while searching for cards. Please try again later.");
-            isLoading = false;
+    // Function to handle filter changes
+    function onFilterChange() {
+        offset = 0;
+        if (currentSearchTerm) {
+            isSearching = true;
+            searchResults = []; // Clear previous search results
+            searchCards(currentSearchTerm);
+        } else {
+            isSearching = false;
+            cardGrid.innerHTML = ''; // Clear existing cards
+            fetchAndDisplayFilteredCards();
         }
     }
 
-    // Add an event listener for scrolling to implement lazy loading
-    window.addEventListener('scroll', async () => {
-        if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
-            if (isSearching && searchResults.length > offset) {
-                await searchCards(currentSearchTerm, offset);
-            } else if (!isSearching) {
-                await displayCardsBatch();
-            }
+    // Function to automatically set card type based on other filters
+    function setCardTypeBasedOnFilters() {
+        // If any monster-related filter has a selected value (not empty or 'all'), set card type to 'Monster'
+        const monsterFilters = [
+            monsterTypeFilter,
+            monsterSubTypeFilter,
+            monsterAbilityFilter,
+            monsterRaceFilter,
+            monsterAttributeFilter,
+            monsterLevelFilter,
+            monsterRankFilter,
+            linkRatingFilter,
+            pendulumScaleFilter
+        ];
+
+        const isMonsterFilterSelected = monsterFilters.some(filter => filter && filter.value && filter.value !== 'all' && filter.value !== '');
+
+        if (isMonsterFilterSelected) {
+            cardTypeFilter.value = 'Monster';
+            return;
+        }
+
+        // If spell type filter has a selected value, set card type to 'Spell'
+        if (spellTypeFilter && spellTypeFilter.value && spellTypeFilter.value !== 'all' && spellTypeFilter.value !== '') {
+            cardTypeFilter.value = 'Spell';
+            return;
+        }
+
+        // If trap type filter has a selected value, set card type to 'Trap'
+        if (trapTypeFilter && trapTypeFilter.value && trapTypeFilter.value !== 'all' && trapTypeFilter.value !== '') {
+            cardTypeFilter.value = 'Trap';
+            return;
+        }
+
+        // If none of the above, do not change the card type filter
+    }
+
+    // Function to clear filters based on selected card type
+    function clearFiltersBasedOnCardType(selectedCardType) {
+        if (selectedCardType === 'Monster') {
+            // Clear Spell and Trap filters
+            if (spellTypeFilter) spellTypeFilter.selectedIndex = 0;
+            if (trapTypeFilter) trapTypeFilter.selectedIndex = 0;
+        } else if (selectedCardType === 'Spell') {
+            // Clear Monster and Trap filters
+            [
+                monsterTypeFilter,
+                monsterSubTypeFilter,
+                monsterAbilityFilter,
+                monsterRaceFilter,
+                monsterAttributeFilter,
+                monsterLevelFilter,
+                monsterRankFilter,
+                linkRatingFilter,
+                pendulumScaleFilter,
+                trapTypeFilter
+            ].forEach(filter => {
+                if (filter) filter.selectedIndex = 0;
+            });
+        } else if (selectedCardType === 'Trap') {
+            // Clear Monster and Spell filters
+            [
+                monsterTypeFilter,
+                monsterSubTypeFilter,
+                monsterAbilityFilter,
+                monsterRaceFilter,
+                monsterAttributeFilter,
+                monsterLevelFilter,
+                monsterRankFilter,
+                linkRatingFilter,
+                pendulumScaleFilter,
+                spellTypeFilter
+            ].forEach(filter => {
+                if (filter) filter.selectedIndex = 0;
+            });
+        }
+    }
+
+    // Add event listeners to all filters
+    [
+        rarityFilter,
+        cardTypeFilter,
+        monsterTypeFilter,
+        monsterSubTypeFilter,
+        monsterAbilityFilter,
+        monsterRaceFilter,
+        monsterAttributeFilter,
+        monsterLevelFilter,
+        monsterRankFilter,
+        linkRatingFilter,
+        pendulumScaleFilter,
+        spellTypeFilter,
+        trapTypeFilter
+    ].forEach(filterElement => {
+        if (filterElement) {
+            filterElement.addEventListener('change', function () {
+                // If the card type filter changed, clear irrelevant filters
+                if (filterElement === cardTypeFilter) {
+                    clearFiltersBasedOnCardType(cardTypeFilter.value);
+                } else {
+                    // Automatically set card type based on other filters
+                    setCardTypeBasedOnFilters();
+                }
+                // Handle filter change
+                onFilterChange();
+            });
         }
     });
 
-    // Trigger search if a search term exists on page reload
-    if (savedSearchTerm) {
-        searchCards(savedSearchTerm);
+    // Add event listener to the reset filters button
+    if (resetFiltersButton) {
+        resetFiltersButton.addEventListener('click', function () {
+            // Reset all filter values to their default
+            [
+                rarityFilter,
+                cardTypeFilter,
+                monsterTypeFilter,
+                monsterSubTypeFilter,
+                monsterAbilityFilter,
+                monsterRaceFilter,
+                monsterAttributeFilter,
+                monsterLevelFilter,
+                monsterRankFilter,
+                linkRatingFilter,
+                pendulumScaleFilter,
+                spellTypeFilter,
+                trapTypeFilter
+            ].forEach(filterElement => {
+                if (filterElement) {
+                    filterElement.selectedIndex = 0; // Reset to first option
+                }
+            });
+
+            // Clear search term
+            if (searchBar) {
+                searchBar.value = '';
+                currentSearchTerm = '';
+                localStorage.removeItem('searchTerm');
+                isSearching = false;
+                searchResults = [];
+            }
+
+            // Reset offset and fetch initial batch
+            offset = 0;
+            cardGrid.innerHTML = '';
+            cardsCountMessage.textContent = '';
+            fetchAndDisplayFilteredCards();
+        });
+    }
+
+    // Function to update the cards count message
+    function updateCardsCountMessage(count) {
+        if (count === 0) {
+            cardsCountMessage.textContent = 'No cards match the selected criteria.';
+        } else {
+            cardsCountMessage.textContent = `Showing ${count} card${count > 1 ? 's' : ''} matching the criteria.`;
+        }
     }
 
     // Function to escape HTML to prevent XSS
@@ -311,4 +477,15 @@ document.addEventListener('DOMContentLoaded', function () {
         div.textContent = text;
         return div.innerHTML;
     }
+
+    // Add an event listener for scrolling to implement lazy loading
+    window.addEventListener('scroll', async () => {
+        if (!isLoading && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100)) {
+            if (isSearching) {
+                await searchCards(currentSearchTerm, offset);
+            } else {
+                await fetchAndDisplayFilteredCards();
+            }
+        }
+    });
 });
