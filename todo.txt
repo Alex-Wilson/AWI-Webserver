@@ -1,2 +1,5 @@
-gallery filter for rarity
-gallery fiter for product line
+Adjust rarity filter to align in the modal and on the drop down
+Adjust drop downs to radio buttons where applicable (Pendulum/Fusion/Effect showing for all three or heirarchy appraoch? )
+Ensure all regex is sanatized in Server
+Add button/second search to search for set-code (display the exact card given set code (LOB-EN001))
+Add button/second search to serach for card sets (display all cards for a set)
